@@ -82,7 +82,7 @@ const Progress = () => {
         return { role: roleParam, isEditMode: editParam };
     }, [location.search]);
 
-    const steps = ["Girl Details", "Guardian Details", "Address", "Documents"];
+    const steps = [ "Guardian Details","Girl Details", "Documents"];
     // const editSteps = ["Your Information", ...steps];
     // const displayedSteps = isEditMode ? editSteps : steps;
     const displayedSteps=steps
@@ -140,19 +140,21 @@ const Progress = () => {
                     <YourInfo setCurrentStep={setCurrentStep} currentStep={currentStep} edit="true" />
                 )} */}
 
-                {( currentStep === 1) && (
-                    <GirlDetail setCurrentStep={setCurrentStep} currentStep={currentStep} />
-                )}
-
-                {( currentStep === 2) && (
+                 {( currentStep === 1) && (
                     <FatherDetail setCurrentStep={setCurrentStep} currentStep={currentStep} />
                 )}
 
-                {( currentStep === 3) && (
-                    <Address setCurrentStep={setCurrentStep} currentStep={currentStep} />
+                {( currentStep === 2) && (
+                    <GirlDetail setCurrentStep={setCurrentStep} currentStep={currentStep} />
                 )}
 
-                {( currentStep === 4) && (
+               
+
+                {/* {( currentStep === 3) && (
+                    <Address setCurrentStep={setCurrentStep} currentStep={currentStep} />
+                )} */}
+
+                {( currentStep === 3) && (
                     <Documents setFormComplete={setFormComplete} edit={isEditMode ? "true" : undefined} />
                 )}
             </div>

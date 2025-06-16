@@ -10,9 +10,9 @@ import SubHeading from '../../Components/UI/SubHeading';
 import Checkbox from '../../Components/UI/CheckBox';
 import { useNavigate } from 'react-router-dom';
 
-const Documents = ({ setFormComplete,edit }: any) => {
+const Documents = ({ setFormComplete, edit }: any) => {
     const dispatch = useDispatch()
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const documentDetails = useSelector((state: any) => state.userForm.documentDetails);
     const girlDetails = useSelector((state: any) => state.userForm.girlDetails);
     const fatherDetails = useSelector((state: any) => state.userForm.fatherDetails);
@@ -21,7 +21,7 @@ const Documents = ({ setFormComplete,edit }: any) => {
         rationCardImage: documentDetails?.rationCardImage ?? null,
         familyIdImage: documentDetails?.familyIdImage ?? null,
         consentGiven: documentDetails?.consentGiven ?? false,
-        isTermAndConditionAccepted :documentDetails?.isTermAndConditionAccepted ?? false
+        isTermAndConditionAccepted: documentDetails?.isTermAndConditionAccepted ?? false
     })
 
     const [showSuccessMessage, setShowSuccessMessage] = useState(false)
@@ -29,7 +29,7 @@ const Documents = ({ setFormComplete,edit }: any) => {
     const [error, setErrors] = useState({
         familyIdImage: "",
         consentGiven: "",
-        isTermAndConditionAccepted:""
+        isTermAndConditionAccepted: ""
     })
 
     const validate = () => {
@@ -60,9 +60,9 @@ const Documents = ({ setFormComplete,edit }: any) => {
 
             setFormComplete(true)
             {
-                edit=="true" ? navigate("/") : triggerFireworks()
+                edit == "true" ? navigate("/") : triggerFireworks()
             }
-            
+
             // setCurrentStep(currentStep + 1)
             // Continue to next step
         }
@@ -86,7 +86,7 @@ const Documents = ({ setFormComplete,edit }: any) => {
                         <Heading title="Documents" />
                     </div>
 
-                        <div className="!mt-5 ">
+                        {/* <div className="!mt-5 ">
                             <ImageUpload
                                 label="Upload Ration Card (Front) (Optional)"
                                 onFileSelect={(file: any) => {
@@ -100,7 +100,7 @@ const Documents = ({ setFormComplete,edit }: any) => {
                                 imageData={formData?.rationCardImage || ""}
                             />
 
-                        </div>
+                        </div> */}
 
                         <div className="!mt-5 ">
                             <ImageUpload
@@ -120,36 +120,49 @@ const Documents = ({ setFormComplete,edit }: any) => {
 
 
                         </div>
+                        <div className='ml-10'> <div className='!ml-2'>
+                            <SubHeading title='By uploading your identification documents (Aadhaar, Ration Card, Family ID), you agree to the following:' />
+                            <div className='mt-2'>  <SubHeading title='- The documents will be processed securely to extract necessary information for eligibility verification.' />
+                                <SubHeading title='- We DO NOT store or share your documents. They are deleted immediately after processing.' />
+                                <SubHeading title='- Only essential details such as name, age, address, and income slab are retained in a secure, encrypted format.' />
+                                <SubHeading title='- Your information will only be used to determine funding eligibility and will not be shared with third parties without your consent.' /></div>
+
+
+
+                            {error?.consentGiven && <p className="text-red-500 text-xs mt-1">{error?.consentGiven}</p>}
+                        </div>
                         <div className='!mt-8 flex w-full '>
+
                             <div className='!mt-1'> <Checkbox
                                 checked={formData?.consentGiven}
                                 isRequired={true}
                                 onChange={(e) => setFormData({ ...documentDetails, consentGiven: e.target.checked })}
 
+                            />
+                            </div>
+                            <div className='ml-2'>  <SubHeading title='I agree to the processing of my documents under the above conditions.' /></div>
+
+
+
+
+
+
+
+
+                        </div></div>
+                       
+
+                        <div className='!mt-8 flex w-full ml-10 '>
+                            <div className='!mt-1'> <Checkbox
+                                checked={formData?.isTermAndConditionAccepted}
+                                isRequired={true}
+                                onChange={(e) => setFormData({ ...formData, isTermAndConditionAccepted: e.target.checked })}
+
                             /></div>
 
                             <div className='!ml-2'>
-                                <SubHeading title='I agree to the upload and secure storage of my documents ' />
-                                <SubHeading title='for identity and verification purposes as part of the marriage' />
-                                <SubHeading title='assistance process.' />
+                                <SubHeading title="I agree to the privacy policy and terms & conditions of the platform." />
 
-                                {error?.consentGiven && <p className="text-red-500 text-xs mt-1">{error?.consentGiven}</p>}
-                            </div>
-
-
-                        </div>
-
-                        <div className='!mt-8 flex w-full '>
-                            <div className='!mt-1'> <Checkbox 
-                            checked={formData?.isTermAndConditionAccepted} 
-                            isRequired={true} 
-                            onChange={(e) => setFormData({ ...formData, isTermAndConditionAccepted:e.target.checked})}
-                           
-                             /></div>
-                           
-                            <div className='!ml-2'>
-                            <SubHeading title="I agree to the privacy policy and terms & conditions of the platform." />
-                               
 
                                 {error?.isTermAndConditionAccepted && <p className="text-red-500 text-xs mt-1">{error?.isTermAndConditionAccepted}</p>}
                             </div>

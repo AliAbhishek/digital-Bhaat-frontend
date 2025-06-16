@@ -40,12 +40,12 @@ const DonorProfileCreation = ({edit}:any) => {
     const validate = () => {
         const newErrors: any = {};
 
-        if (!formData.city) newErrors.city = "City name is required.";
-        if (!formData.district) newErrors.district = "District name is required.";
-        if (!formData.state) newErrors.state = "State name is required.";
-        if (!formData.pinCode) newErrors.pinCode = "Pin code is required.";
-        if (!formData.country) newErrors.country = "Country name is required.";
-        if (!formData.consentGiven) newErrors.consentGiven = "Please accept the term and conditions."
+        // if (!formData.city) newErrors.city = "City name is required.";
+        // if (!formData.district) newErrors.district = "District name is required.";
+        // if (!formData.state) newErrors.state = "State name is required.";
+        // if (!formData.pinCode) newErrors.pinCode = "Pin code is required.";
+        // if (!formData.country) newErrors.country = "Country name is required.";
+        // if (!formData.consentGiven) newErrors.consentGiven = "Please accept the term and conditions."
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;

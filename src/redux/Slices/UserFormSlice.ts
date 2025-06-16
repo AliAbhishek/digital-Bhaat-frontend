@@ -3,9 +3,10 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   girlDetails: {},
   fatherDetails: {},
-  addressDetails: {},
-  documentDetails:{}
- 
+  fatherAddressDetails: {},
+  documentDetails: {},
+  girlAddressDetails:{}
+
 };
 
 const UserFormSlice = createSlice({
@@ -13,15 +14,18 @@ const UserFormSlice = createSlice({
   initialState,
   reducers: {
     setGirlDetails: (state, action) => {
-      console.log(action.payload,"action")
+      console.log(action.payload, "action")
       state.girlDetails = action.payload;
     },
     setFatherDetails: (state, action) => {
       state.fatherDetails = action.payload;
     },
 
-    setAddreddDetails: (state, action) => {
-      state.addressDetails = action.payload;
+    setFatherAddreddDetails: (state, action) => {
+      state.fatherAddressDetails = action.payload;
+    },
+    setGirlAddreddDetails: (state, action) => {
+      state.girlAddressDetails = action.payload;
     },
 
     setDocumentDetails: (state, action) => {
@@ -29,7 +33,7 @@ const UserFormSlice = createSlice({
     },
 
 
-   
+
     resetForm: () => initialState,
   },
 });
@@ -37,7 +41,8 @@ const UserFormSlice = createSlice({
 export const {
   setGirlDetails,
   setFatherDetails,
-  setAddreddDetails,
+  setFatherAddreddDetails,
+  setGirlAddreddDetails,
   setDocumentDetails,
   resetForm,
 } = UserFormSlice.actions;

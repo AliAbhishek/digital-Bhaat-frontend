@@ -44,7 +44,8 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
             if (isEditMode) {
                 navigate("/")
             } else {
-                let role = "user"
+                
+                let role = "donor"
                 navigate(`/create-profile?role=${role}`)
             }
 

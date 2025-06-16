@@ -1,27 +1,13 @@
-import { useState } from "react";
+
 import Heading from "../../Components/UI/Heading";
 import InputBox from "../../Components/UI/InputBox";
-import PrimaryButton from "../../Components/UI/PrimaryButton";
-import { useDispatch, useSelector } from "react-redux";
-import { setAddreddDetails } from "../../redux/Slices/UserFormSlice";
 import TextAreaBox from "../../Components/UI/TextArea";
 
-const Address = ({ setCurrentStep, currentStep }: any) => {
-    const dispatch = useDispatch()
-    const addressDetails = useSelector((state: any) => state.userForm.addressDetails);
-    const [formData, setFormData] = useState({
-        street: addressDetails?.street ?? "",
-        village: addressDetails?.village ?? "",
-        postOffice: addressDetails?.postOffice ?? "",
-        district: addressDetails?.district ?? "",
-        state: addressDetails?.state ?? "",
-        pincode: addressDetails?.pincode ?? "",
-        weddingVenue: addressDetails?.weddingVenue ?? "",
-    });
+const Address = ({ isBride, setFormData, formData, errors }: any) => {
+    // const dispatch = useDispatch()
 
-    const [error,setErrors]=useState({
-        weddingVenue:""
-    })
+    console.log(errors, "err")
+
 
 
     const handleChange = (e: any) => {
@@ -31,25 +17,25 @@ const Address = ({ setCurrentStep, currentStep }: any) => {
 
     };
 
-    const validate = () => {
-        const newErrors: any = {};
+    // const validate = () => {
+    //     const newErrors: any = {};
 
-        if(!formData.weddingVenue){
-            newErrors.weddingVenue="Wedding avenue is required."
-        }
-        setErrors(newErrors);
+    //     if (!formData.weddingVenue) {
+    //         newErrors.weddingVenue = "Wedding avenue is required."
+    //     }
+    //     setErrors(newErrors);
 
-        return Object.keys(newErrors).length === 0;
-    }
+    //     return Object.keys(newErrors).length === 0;
+    // }
 
-    const handleSubmit = () => {
-        if (validate()) {
-        // console.log("✅ Valid form submitted:", fatherFormDetails);
-        dispatch(setAddreddDetails(formData))
-        setCurrentStep(currentStep + 1)
-        // Continue to next step
-        }
-    };
+    // const handleSubmit = () => {
+    //     if (validate()) {
+    //     // console.log("✅ Valid form submitted:", fatherFormDetails);
+    //     dispatch(setAddreddDetails(formData))
+    //     setCurrentStep(currentStep + 1)
+    //     // Continue to next step
+    //     }
+    // };
 
 
     return (
@@ -80,7 +66,7 @@ const Address = ({ setCurrentStep, currentStep }: any) => {
                         handleChange={handleChange}
                         isRequired={true}
                         type="text"
-                    // error={errors.village}
+                        error={errors.village}
                     />
                 </div>
             </div>
@@ -93,7 +79,7 @@ const Address = ({ setCurrentStep, currentStep }: any) => {
                         handleChange={handleChange}
                         isRequired={true}
                         type="text"
-                    // error={errors.postOffice}
+                        error={errors.postOffice}
                     />
                 </div>
                 <div className="w-full md:w-1/2">
@@ -105,7 +91,7 @@ const Address = ({ setCurrentStep, currentStep }: any) => {
                         handleChange={handleChange}
                         isRequired={true}
                         type="text"
-                    // error={errors.district}
+                        error={errors.district}
                     />
                 </div>
             </div>
@@ -121,7 +107,7 @@ const Address = ({ setCurrentStep, currentStep }: any) => {
                         handleChange={handleChange}
                         isRequired={true}
                         type="text"
-                    // error={errors.state}
+                        error={errors.state}
                     />
 
 
@@ -134,7 +120,7 @@ const Address = ({ setCurrentStep, currentStep }: any) => {
                         value={formData.pincode}
                         handleChange={handleChange}
                         isRequired={true}
-                        // error={errors.pincode}
+                        error={errors.pincode}
                         type="number"
                     />
 
@@ -145,8 +131,7 @@ const Address = ({ setCurrentStep, currentStep }: any) => {
 
 
             </div>
-
-            <div className="flex flex-col md:flex-row gap-6">
+            {isBride && <div className="flex flex-col md:flex-row gap-6">
 
                 <div className="w-full md:w-1/2">
                     <TextAreaBox
@@ -155,16 +140,18 @@ const Address = ({ setCurrentStep, currentStep }: any) => {
                         value={formData.weddingVenue}
                         handleChange={handleChange}
                         isRequired={true}
-                      error={error.weddingVenue}
+                        error={errors.weddingVenue}
                     />
                 </div>
-            </div>
+            </div>}
 
-            <div className="pt-4 flex justify-center !mb-10 !mt-3">
+
+
+            {/* <div className="pt-4 flex justify-center !mb-10 !mt-3">
                 <div className="w-[7.5rem]">
                     <PrimaryButton text="Continue" type="button" onClick={handleSubmit} />
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

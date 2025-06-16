@@ -4,9 +4,10 @@ import InputBox from "../../Components/UI/InputBox";
 import PrimaryButton from "../../Components/UI/PrimaryButton";
 import ImageUpload from "../../Components/UI/ImageUpload";
 import { useDispatch, useSelector } from "react-redux";
-import { setFatherDetails } from "../../redux/Slices/UserFormSlice";
+import { setFatherAddreddDetails, setFatherDetails } from "../../redux/Slices/UserFormSlice";
 import SelectBox from "../../Components/UI/SelctBox";
 import ProfileImageUpload from "../../Components/UI/ProfileImageInput";
+import Address from "./Address";
 
 const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
     const dispatch = useDispatch()
@@ -20,9 +21,20 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
         guardianRelation: fatherDetails?.guardianRelation ?? "",
         guardianDisability: fatherDetails?.guardianDisability ?? "No",
         isSingleParent: fatherDetails?.isSingleParent ?? "No",
-        profileImage:fatherDetails?.profileImage ?? null
+        profileImage: fatherDetails?.profileImage ?? null
 
 
+    });
+
+    const addressDetails = useSelector((state: any) => state.userForm.fatherAddressDetails);
+    const [formData, setFormData] = useState({
+        street: addressDetails?.street ?? "",
+        village: addressDetails?.village ?? "",
+        postOffice: addressDetails?.postOffice ?? "",
+        district: addressDetails?.district ?? "",
+        state: addressDetails?.state ?? "",
+        pincode: addressDetails?.pincode ?? "",
+        weddingVenue: addressDetails?.weddingVenue ?? "",
     });
 
     const disabilityOptions = [
@@ -40,7 +52,14 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
         fatherPhoneNumber: "",
         fatherAadhaarImage: "",
         // annualIncome:""
-        guardianRelation: ""
+        guardianRelation: "",
+        // street:"",
+        village: "",
+        postOffice: "",
+        district: "",
+        state: "",
+        pincode: ""
+
     });
 
     const handleChange = (e: any) => {
@@ -81,6 +100,14 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
 
         if (!fatherFormDetails.fatherAadhaarImage) newErrors.fatherAadhaarImage = "Please upload Aadhaar image";
         if (!fatherFormDetails.guardianRelation) newErrors.guardianRelation = "Guardian Relation is required.";
+        if (!formData.village) newErrors.village = "Village name is required.";
+        if (!formData.district) newErrors.district = "District name is required.";
+        if (!formData.state) newErrors.state = "State name is required.";
+        if (!formData.pincode) newErrors.pincode = "Pin code is required.";
+        if (!formData.postOffice) newErrors.postOffice = "PostOffice is required.";
+
+
+
         setErrors(newErrors);
 
         return Object.keys(newErrors).length === 0;
@@ -91,6 +118,7 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
         if (validate()) {
             // console.log("✅ Valid form submitted:", fatherFormDetails);
             dispatch(setFatherDetails(fatherFormDetails))
+            dispatch(setFatherAddreddDetails(formData))
             setCurrentStep(currentStep + 1)
             // Continue to next step
         }
@@ -109,7 +137,7 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
                     setFatherFormDetails({ ...fatherFormDetails, profileImage: file })
 
                 }}
-                />
+            />
 
             {/* Row 1: Name + Phone */}
             <div className="flex flex-col md:flex-row gap-6">
@@ -175,27 +203,27 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
             <div className="flex flex-col md:flex-row gap-6">
 
                 {/* <div className="w-full md:w-1/2 relative"> */}
-                    <SelectBox
-                        label="Guardian with disabality"
-                        name="guardianDisability"
-                        value={fatherFormDetails.guardianDisability}
-                        handleChange={handleChange}
-                        options={disabilityOptions}
-                        isRequired={true}
-                    />
+                <SelectBox
+                    label="Guardian with disabality"
+                    name="guardianDisability"
+                    value={fatherFormDetails.guardianDisability}
+                    handleChange={handleChange}
+                    options={disabilityOptions}
+                    isRequired={true}
+                />
 
 
                 {/* </div> */}
 
                 {/* <div className="w-full md:w-1/2 relative"> */}
-                    <SelectBox
-                        label="Single Parental"
-                        name="isSingleParent"
-                        value={fatherFormDetails.isSingleParent}
-                        handleChange={handleChange}
-                        options={disabilityOptions}
-                        isRequired={true}
-                    />
+                <SelectBox
+                    label="Single Parental"
+                    name="isSingleParent"
+                    value={fatherFormDetails.isSingleParent}
+                    handleChange={handleChange}
+                    options={disabilityOptions}
+                    isRequired={true}
+                />
 
 
                 {/* </div> */}
@@ -217,6 +245,8 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
 
 
                 </div> */}
+
+            <Address setFormData={setFormData} formData={formData} errors={errors} />
             <div className="!mt-5">
                 <ImageUpload
                     label="Upload Aadhaar Card (Front)"

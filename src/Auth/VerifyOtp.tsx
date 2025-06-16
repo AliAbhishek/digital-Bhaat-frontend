@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import OtpInput from "react18-otp-input";
 import Moto from "../Components/UI/Moto";
 import Heading from "../Components/UI/Heading";
@@ -7,8 +7,16 @@ import PrimaryButton from "../Components/UI/PrimaryButton";
 import logoImage from "../assets/transparentLogo.png";
 import { SimpleText } from "../Components/UI/SimpleText";
 import SubHeading from "../Components/UI/SubHeading";
+import { useMutationApi } from "../customHooks/useMutationApi";
+import { endpoints } from "../api/endpoints";
+import toast from "react-hot-toast";
 
 const VerifyOtp = () => {
+    const query = new URLSearchParams(useLocation().search);
+    const encodedId = query.get("id");
+    const id = encodedId ? atob(encodedId) : null; // Decrypt
+
+    console.log("Decrypted ID:", id);
     const [otp, setOtp] = useState("");
     const [error, setError] = useState("");
     const [timer, setTimer] = useState(60);
@@ -26,6 +34,46 @@ const VerifyOtp = () => {
         }
     }, [timer]);
 
+    const { mutate: resendMutate, isPending: resendIsPending } = useMutationApi({
+        url: endpoints.RESEND_OTP.endpoint,
+        method: endpoints.RESEND_OTP.method,
+        onSuccess: (data) => {
+            console.log(data, "data")
+            toast.success(data?.message);
+            toast.success(data?.data?.otp);
+
+            // navigate(`/verify-otp?id=${encodedId}`);
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message || "Something went wrong.";
+            toast.error(message);
+        },
+    });
+
+    const { mutate: verifyMutate, isPending: verifyIsPending } = useMutationApi({
+        url: endpoints.VERIFY_OTP.endpoint,
+        method: endpoints.VERIFY_OTP.method,
+        onSuccess: (data) => {
+            console.log(data, "data")
+            toast.success(data?.message);
+            localStorage.setItem("token", data?.data?.token)
+            if (data?.data?.isProfileCompleted) {
+                navigate("/")
+            } else {
+                navigate("/your-info")
+            }
+
+
+            // toast.success(data?.data?.otp);
+
+            // navigate(`/verify-otp?id=${encodedId}`);
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message || "Something went wrong.";
+            toast.error(message);
+        },
+    });
+
     const handleVerify = (e: React.FormEvent) => {
         e.preventDefault();
         if (otp.length !== 4) {
@@ -33,18 +81,22 @@ const VerifyOtp = () => {
             return;
         }
         setError("");
+        verifyMutate({ otp, userId: id })
         // console.log("OTP Verified:", otp);
         // navigate("/create-profile");
-        navigate("/your-info")
     };
 
     const handleResend = () => {
         setOtp("");
         setTimer(60);
         setResendDisabled(true);
+        resendMutate({ userId: id })
+
         // console.log("Resending OTP...");
         // Call your resend API here
     };
+
+
 
     return (
         <div className="flex justify-center items-center min-h-screen gap-30 w-full">
@@ -64,10 +116,13 @@ const VerifyOtp = () => {
                 <span className="borderLine"></span>
                 <form onSubmit={handleVerify} className="space-y-6">
                     <Heading title="Verify OTP" />
-                    <div className="text-center"> <SubHeading title="Please verify the OTP sent to your " /></div>
-                    
-                    <div className="text-center"> <SubHeading title="registered phone number"/></div>
-                   
+                    <div>
+                        <div className="text-center"> <SubHeading title="Please verify the OTP sent to your " /></div>
+
+                        <div className="text-center "> <SubHeading title="registered phone number" /></div>
+
+                    </div>
+
 
                     <OtpInput
                         value={otp}
@@ -97,23 +152,32 @@ const VerifyOtp = () => {
 
                     {error && <p className="text-red-500 text-sm !mt-4">{error}</p>}
 
-                    <PrimaryButton text="Verify" type="submit" />
+                    <PrimaryButton isPending={verifyIsPending} text="Verify" type="submit" />
 
                     <div className="text-center text-sm mt-5">
-                        {resendDisabled ? (
-                            <div className="flex justify-center items-center gap-1 text-white">
-                                <SimpleText title="Resend OTP in" />
-                                <span className="font-semibold !mt-3">{timer}s</span>
-                            </div>
-                        ) : (
-                            <button
+                        {
+                            resendIsPending ? <button
                                 type="button"
                                 onClick={handleResend}
                                 className="text-[#c98c64] font-medium hover:underline transition !mt-3"
                             >
-                                Resend OTP
-                            </button>
-                        )}
+                                Sending...
+                            </button> : resendDisabled ? (
+                                <div className="flex justify-center items-center gap-1 text-white">
+                                    <SimpleText title="Resend OTP in" />
+                                    <span className="font-semibold !mt-3">{timer}s</span>
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={handleResend}
+                                    className="text-[#c98c64] font-medium hover:underline transition !mt-3"
+                                >
+                                    {resendIsPending ? "Sending..." : "Resend OTP"}
+                                </button>
+                            )
+                        }
+
                     </div>
 
                 </form>

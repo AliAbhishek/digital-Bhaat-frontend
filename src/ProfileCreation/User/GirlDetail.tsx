@@ -4,9 +4,10 @@ import InputBox from "../../Components/UI/InputBox";
 import PrimaryButton from "../../Components/UI/PrimaryButton";
 import ImageUpload from "../../Components/UI/ImageUpload";
 import { useDispatch, useSelector } from "react-redux";
-import { setGirlDetails } from "../../redux/Slices/UserFormSlice";
+import { setGirlAddreddDetails, setGirlDetails } from "../../redux/Slices/UserFormSlice";
 import ProfileImageUpload from "../../Components/UI/ProfileImageInput";
 import SelectBox from "../../Components/UI/SelctBox";
+import Address from "./Address";
 
 const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
     const dispatch = useDispatch()
@@ -24,6 +25,17 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
         brideDisability: girlDetails?.brideDisability ?? "No"
     });
 
+    const addressDetails = useSelector((state: any) => state.userForm.girlAddressDetails);
+    const [formData, setFormData] = useState({
+        street: addressDetails?.street ?? "",
+        village: addressDetails?.village ?? "",
+        postOffice: addressDetails?.postOffice ?? "",
+        district: addressDetails?.district ?? "",
+        state: addressDetails?.state ?? "",
+        pincode: addressDetails?.pincode ?? "",
+        weddingVenue: addressDetails?.weddingVenue ?? "",
+    });
+
     // const [isVerifying, setIsVerifying] = useState(false);
 
     const [errors, setErrors] = useState({
@@ -32,7 +44,12 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
         brideAadharNumber: "",
         bridePhoneNumber: "",
         brideAadhaarImage: "",
-        weddingDate: ""
+        weddingDate: "",
+        village: "",
+        postOffice: "",
+        district: "",
+        state: "",
+        pincode: ""
     });
 
     const disabilityOptions = [
@@ -85,7 +102,13 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
             newErrors.weddingDate = "Wedding date is required."
         } else if (new Date(girlFormDetails.weddingDate) < new Date()) {
             newErrors.weddingDate = "Wedding date cannot be in the past.";
+
         }
+        if (!formData.village) newErrors.village = "Village name is required.";
+        if (!formData.district) newErrors.district = "District name is required.";
+        if (!formData.state) newErrors.state = "State name is required.";
+        if (!formData.pincode) newErrors.pincode = "Pin code is required.";
+        if (!formData.postOffice) newErrors.postOffice = "PostOffice is required.";
         setErrors(newErrors);
 
         return Object.keys(newErrors).length === 0;
@@ -95,6 +118,7 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
     const handleSubmit = () => {
         if (validate()) {
             dispatch(setGirlDetails(girlFormDetails))
+            dispatch(setGirlAddreddDetails(formData))
             // console.log("✅ Valid form submitted:", girlFormDetails);
             setCurrentStep(currentStep + 1)
             // Continue to next step
@@ -178,15 +202,18 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
             </div>
 
             <div className="flex flex-col md:flex-row gap-6">
-                <InputBox
+                <div><InputBox
                     value={girlFormDetails.weddingDate}
                     handleChange={handleChange}
                     name="weddingDate"
                     label="Wedding Date"
                     type="date"
                     isRequired={true}
-                    error={errors.weddingDate}
+                // error={errors.weddingDate}
                 />
+                    {errors.weddingDate && <p className="text-red-500 text-sm !mt-2">{errors.weddingDate}</p>}
+                </div>
+
                 <SelectBox
                     label="Bride with disabality"
                     name="brideDisability"
@@ -196,6 +223,7 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
                     isRequired={true}
                 />
             </div>
+            <Address setFormData={setFormData} formData={formData} errors={errors} />
             <div className="!mt-5">
                 <ImageUpload
                     label="Upload Aadhaar Card (Front)"

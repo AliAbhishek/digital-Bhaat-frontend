@@ -10,38 +10,73 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import SubHeading from "../Components/UI/SubHeading";
 import toast from "react-hot-toast";
+import { useMutationApi } from "../customHooks/useMutationApi";
+import { endpoints } from "../api/endpoints";
 
 
 
 const SignUp = () => {
+    const [signUp, setSignUp] = useState(false);
+    const [role, setRole] = useState<"user" | "donor" | null>(null);
+    const navigate = useNavigate()
+
+
+    const { mutate, isPending } = useMutationApi({
+        url: signUp ? endpoints.SIGN_UP.endpoint : endpoints.LOG_IN.endpoint,
+        method: signUp ? endpoints.SIGN_UP.method : endpoints.LOG_IN.method,
+        onSuccess: (data) => {
+            console.log(data, "data")
+            toast.success(data?.message);
+            data?.data?.otp &&  toast.success(data?.data?.otp);
+           
+            const encodedId = btoa(data?.data?.userId);
+            navigate(`/verify-otp?id=${encodedId}`);
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message || "Something went wrong.";
+            toast.error(message);
+        },
+    });
     const [formData, setFormData] = useState({
         // email: "", password: ""
         countryCode: "+91",
         phoneNumber: ""
 
     });
-    const [signUp, setSignUp] = useState(false);
-    const [role, setRole] = useState<"needHelp" | "giveHelp" | null>(null);
-    const navigate = useNavigate()
+
+
 
 
 
     const handleLogin = (e: any) => {
-
+        console.log(formData, "form")
         e.preventDefault();
         if (!formData.phoneNumber) {
             toast.error("Please enter your phone number")
             return
         }
+        mutate(formData)
 
-        // console.log(formData);
-        navigate("/verify-otp")
+
     }
 
     const handleSignUp = (e: any) => {
         e.preventDefault()
-        navigate("/verify-otp")
+        if (!formData.phoneNumber) {
+            toast.error("Please enter your phone number")
+            return
+        }
+        if (!role) {
+            toast.error("Please choose the role")
+            return
+        }
+        mutate({ ...formData, role })
+
+
+        // navigate("/verify-otp")
     }
+
+
 
     return (
         <div className="flex justify-center items-center min-h-screen gap-30 w-full">
@@ -72,13 +107,13 @@ const SignUp = () => {
                         signUp && <div className="flex gap-4 justify-center !mt-8">
                             <RoleSelectButton
                                 text="I Need Help"
-                                isSelected={role === "needHelp"}
-                                onClick={() => setRole("needHelp")}
+                                isSelected={role === "user"}
+                                onClick={() => setRole("user")}
                             />
                             <RoleSelectButton
                                 text="I Want to Help"
-                                onClick={() => setRole("giveHelp")}
-                                isSelected={role === "giveHelp"}
+                                onClick={() => setRole("donor")}
+                                isSelected={role === "donor"}
 
                             />
                         </div>
@@ -147,12 +182,12 @@ const SignUp = () => {
 
                     {/* <input type="submit" id="submit" value="Login" /> */}
                     {
-                        signUp && <><PrimaryButton text="SignUp" type="submit" />
+                        signUp && <><PrimaryButton isPending={isPending} text="SignUp" type="submit" />
                             <SecondaryButton text="Login" type="button" onClick={() => setSignUp(false)} />
                         </>
                     }
                     {
-                        !signUp && <><PrimaryButton text="Login" type="submit" />
+                        !signUp && <><PrimaryButton isPending={isPending} text="Login" type="submit" />
                             <SecondaryButton text="SignUp" type="button" onClick={() => setSignUp(true)} />
                         </>
                     }
