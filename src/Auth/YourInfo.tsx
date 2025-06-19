@@ -7,10 +7,14 @@ import { useNavigate } from "react-router-dom";
 import 'react-phone-input-2/lib/style.css'
 import InputBox from "../Components/UI/InputBox";
 import ProfileImageUpload from "../Components/UI/ProfileImageInput";
+import { getUserIdFromToken } from "../utils/decodeToken";
 
 
 
 const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
+
+    const decodedToken = getUserIdFromToken();
+
     const { isEditMode } = useMemo(() => {
         const params = new URLSearchParams(location.search);
 
@@ -44,7 +48,7 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
             if (isEditMode) {
                 navigate("/")
             } else {
-                
+
                 let role = "donor"
                 navigate(`/create-profile?role=${role}`)
             }
