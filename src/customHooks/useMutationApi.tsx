@@ -12,7 +12,7 @@ interface MutationApiParams {
 export const useMutationApi = ({ url, method, onSuccess, onError }: MutationApiParams) => {
   return useMutation({
     mutationFn: async (payload: any) => {
-      const response = await axiosInstance[method](url, payload);
+      const response = await (axiosInstance as any)[method](url, payload);
       return response.data;
     },
     onSuccess,

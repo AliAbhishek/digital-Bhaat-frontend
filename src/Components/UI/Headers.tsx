@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SearchBar from './Searchbar';
 
 const Header = () => {
+    const token:any = localStorage.getItem("token")
     const [menuOpen, setMenuOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -59,14 +60,17 @@ const Header = () => {
                     >
                         Our Impact
                     </button>
-                    <button
+                    {
+                        !token && <button
                         className="py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
                         onClick={() => handleNav('/signUp')}
                     >
                         Login / Sign Up
                     </button>
-
-                    {/* Profile Dropdown */}
+                    }
+                
+                    {
+                        token &&   
                     <div className="relative" ref={dropdownRef}>
                         <button
                             className="text-[#fef9f6] hover:text-[#c98c64] transition"
@@ -122,17 +126,24 @@ const Header = () => {
                         )}
 
                     </div>
+                    }
+                  
+
+                  
                 </div>
 
                 {/* Mobile Menu Toggle */}
                 <div className="md:hidden flex items-center space-x-4">
-                    <button
+                    {
+                        token &&  <button
                         className="text-[#fef9f6]"
-                        onClick={() => handleNav('/create-profile?role=donor&&edit=true')}
+                        onClick={() =>  handleNav("/your-info?edit=true")}
                         aria-label="Profile"
                     >
                         <User className="w-5 h-5" />
                     </button>
+                    }
+                   
                     <button onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
                         {menuOpen ? (
                             <X className="w-6 h-6 text-[#fef9f6]" />
@@ -170,6 +181,27 @@ const Header = () => {
                         >
                             Donate Now
                         </button>
+                        {
+                            !token && <button
+                            className="block w-full py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
+                            onClick={() => handleNav('/signUp')}
+                        >
+                            Login / Sign Up
+                        </button>
+                        }
+                        {
+                            token &&  <button
+                            className="block w-full py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
+                             onClick={() => {
+                                        // handle logout logic here
+                                        console.log("Logout clicked");
+                                    }}
+                        >
+                            Logout
+                        </button>
+                        } 
+                       
+                        
                     </motion.div>
                 )}
             </AnimatePresence>

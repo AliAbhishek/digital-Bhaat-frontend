@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Heading from "../../Components/UI/Heading";
 import InputBox from "../../Components/UI/InputBox";
 import PrimaryButton from "../../Components/UI/PrimaryButton";
@@ -8,9 +8,18 @@ import { setFatherAddreddDetails, setFatherDetails } from "../../redux/Slices/Us
 import SelectBox from "../../Components/UI/SelctBox";
 import ProfileImageUpload from "../../Components/UI/ProfileImageInput";
 import Address from "./Address";
+import toast from "react-hot-toast";
+import { useMutationApi } from "../../customHooks/useMutationApi";
+import { endpoints } from "../../api/endpoints";
 
 const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
     const dispatch = useDispatch()
+    const { isAadharUploaded } = useMemo(() => {
+        const params = new URLSearchParams(location.search);
+
+        const aadharUpload = params.get("aadharUpload") === "true"; // convert to boolean
+        return { isAadharUploaded: aadharUpload };
+    }, [location.search]);
     const fatherDetails = useSelector((state: any) => state.userForm.fatherDetails);
     const [fatherFormDetails, setFatherFormDetails] = useState({
         fatherName: fatherDetails?.fatherName ?? "",
@@ -62,6 +71,33 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
 
     });
 
+    const { mutate, isPending } = useMutationApi({
+        url: endpoints.AADHAR_UPLOAD.endpoint,
+        method: endpoints.AADHAR_UPLOAD.method,
+        onSuccess: (data) => {
+            console.log(data, "AADHAR_UPLOAD")
+            if(data?.success==true){
+                // setFatherFormDetails(()
+                const { name, aadhar } = data.data;
+                setFatherFormDetails((prev) => ({
+                    ...prev,
+                    fatherName: name,
+                    fatherAadharNumber: aadhar.replace(/\s/g, ""),
+                }))
+            }
+            // if (data?.status == 200) {
+            //     let role = decodedToken?.role
+            //     navigate(`/create-profile?role=${role}&aadharUpload=false`)
+            // }
+
+
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message || "Something went wrong.";
+            toast.error(message);
+        },
+    });
+
     const handleChange = (e: any) => {
         const { name, value } = e.target;
 
@@ -70,6 +106,18 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
         setFatherFormDetails({ ...fatherFormDetails, [name]: value });
         setErrors({ ...errors, [name]: "" });
     };
+   
+
+    const handleUpload=()=>{
+        if(fatherFormDetails.fatherAadhaarImage){
+         let formdataToSend = new FormData()
+                if (fatherFormDetails.fatherAadhaarImage == null) return
+                formdataToSend.append("file", fatherFormDetails.fatherAadhaarImage)
+                mutate(formdataToSend) 
+        }else{
+            toast.error("Please upload guardians's aadhar card image.")
+        }
+    }
 
     const validate = () => {
         const newErrors: any = {};
@@ -127,112 +175,115 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-10 rounded-2xl shadow-md mt-8 space-y-6">
-            <div className="text-center !mb-3">
-                <Heading title="Guardian Details" />
-            </div>
+            {
+                isAadharUploaded ?
+                    <>
+                        <div className="text-center !mb-3">
+                            <Heading title="Guardian Details" />
+                        </div>
 
-            <ProfileImageUpload
-                image={fatherFormDetails.profileImage}
-                setImage={(file: any) => {
-                    setFatherFormDetails({ ...fatherFormDetails, profileImage: file })
+                        <ProfileImageUpload
+                            image={fatherFormDetails.profileImage}
+                            setImage={(file: any) => {
+                                setFatherFormDetails({ ...fatherFormDetails, profileImage: file })
 
-                }}
-            />
+                            }}
+                        />
 
-            {/* Row 1: Name + Phone */}
-            <div className="flex flex-col md:flex-row gap-6">
-                <div className="w-full md:w-1/2">
-                    <InputBox
-                        value={fatherFormDetails.fatherName}
-                        handleChange={handleChange}
-                        name="fatherName"
-                        label="Full Name (as per Aadhaar)"
-                        type="text"
-                        isRequired={true}
-                        error={errors.fatherName}
-                    />
-                </div>
-                <div className="w-full md:w-1/2">
-                    <InputBox
-                        value={fatherFormDetails.fatherPhoneNumber}
-                        handleChange={handleChange}
-                        name="fatherPhoneNumber"
-                        label="Phone Number"
-                        type="text"
-                        isRequired={true}
-                        error={errors.fatherPhoneNumber}
-                    />
-                </div>
-            </div>
+                        {/* Row 1: Name + Phone */}
+                        <div className="flex flex-col md:flex-row gap-6">
+                            <div className="w-full md:w-1/2">
+                                <InputBox
+                                    value={fatherFormDetails.fatherName}
+                                    handleChange={handleChange}
+                                    name="fatherName"
+                                    label="Full Name (as per Aadhaar)"
+                                    type="text"
+                                    isRequired={true}
+                                    error={errors.fatherName}
+                                />
+                            </div>
+                            <div className="w-full md:w-1/2">
+                                <InputBox
+                                    value={fatherFormDetails.fatherPhoneNumber}
+                                    handleChange={handleChange}
+                                    name="fatherPhoneNumber"
+                                    label="Phone Number"
+                                    type="text"
+                                    isRequired={true}
+                                    error={errors.fatherPhoneNumber}
+                                />
+                            </div>
+                        </div>
 
-            {/* Row 2: DOB + Aadhaar */}
-            <div className="flex flex-col md:flex-row gap-6">
+                        {/* Row 2: DOB + Aadhaar */}
+                        <div className="flex flex-col md:flex-row gap-6">
 
-                <div className="w-full md:w-1/2 relative">
-                    <InputBox
-                        value={fatherFormDetails.fatherAadharNumber}
-                        handleChange={handleChange}
-                        name="fatherAadharNumber"
-                        label="Aadhaar Number"
-                        type="text"
-                        isRequired={true}
-                        error={errors.fatherAadharNumber}
-                    />
-
-
-                </div>
-
-                <div className="w-full md:w-1/2 relative">
-                    <InputBox
-                        value={fatherFormDetails.guardianRelation}
-                        handleChange={handleChange}
-                        name="guardianRelation"
-                        label="Guardian Relation"
-                        type="text"
-                        isRequired={true}
-                        error={errors.guardianRelation}
-                    />
+                            <div className="w-full md:w-1/2 relative">
+                                <InputBox
+                                    value={fatherFormDetails.fatherAadharNumber}
+                                    handleChange={handleChange}
+                                    name="fatherAadharNumber"
+                                    label="Aadhaar Number"
+                                    type="text"
+                                    isRequired={true}
+                                    error={errors.fatherAadharNumber}
+                                />
 
 
-                </div>
+                            </div>
+
+                            <div className="w-full md:w-1/2 relative">
+                                <InputBox
+                                    value={fatherFormDetails.guardianRelation}
+                                    handleChange={handleChange}
+                                    name="guardianRelation"
+                                    label="Guardian Relation"
+                                    type="text"
+                                    isRequired={true}
+                                    error={errors.guardianRelation}
+                                />
 
 
-
-            </div>
-
-            <div className="flex flex-col md:flex-row gap-6">
-
-                {/* <div className="w-full md:w-1/2 relative"> */}
-                <SelectBox
-                    label="Guardian with disabality"
-                    name="guardianDisability"
-                    value={fatherFormDetails.guardianDisability}
-                    handleChange={handleChange}
-                    options={disabilityOptions}
-                    isRequired={true}
-                />
-
-
-                {/* </div> */}
-
-                {/* <div className="w-full md:w-1/2 relative"> */}
-                <SelectBox
-                    label="Single Parental"
-                    name="isSingleParent"
-                    value={fatherFormDetails.isSingleParent}
-                    handleChange={handleChange}
-                    options={disabilityOptions}
-                    isRequired={true}
-                />
-
-
-                {/* </div> */}
+                            </div>
 
 
 
-            </div>
+                        </div>
 
-            {/* <div className="w-full md:w-1/2 relative">
+                        <div className="flex flex-col md:flex-row gap-6">
+
+                            {/* <div className="w-full md:w-1/2 relative"> */}
+                            <SelectBox
+                                label="Guardian with disabality"
+                                name="guardianDisability"
+                                value={fatherFormDetails.guardianDisability}
+                                handleChange={handleChange}
+                                options={disabilityOptions}
+                                isRequired={true}
+                            />
+
+
+                            {/* </div> */}
+
+                            {/* <div className="w-full md:w-1/2 relative"> */}
+                            <SelectBox
+                                label="Single Parental"
+                                name="isSingleParent"
+                                value={fatherFormDetails.isSingleParent}
+                                handleChange={handleChange}
+                                options={disabilityOptions}
+                                isRequired={true}
+                            />
+
+
+                            {/* </div> */}
+
+
+
+                        </div>
+
+                        {/* <div className="w-full md:w-1/2 relative">
                     <InputBox
                         value={fatherFormDetails.annualIncome}
                         handleChange={handleChange}
@@ -246,28 +297,37 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
 
                 </div> */}
 
-            <Address setFormData={setFormData} formData={formData} errors={errors} />
-            <div className="!mt-5">
-                <ImageUpload
-                    label="Upload Aadhaar Card (Front)"
-                    onFileSelect={(file: any) => {
-                        // Save the file in your state if needed
-                        setFatherFormDetails((prev) => ({
-                            ...prev,
-                            fatherAadhaarImage: file
-                        }));
-                    }}
-                    error={errors.fatherAadhaarImage}
-                    imageData={fatherFormDetails?.fatherAadhaarImage || ""}
-                />
+                        <Address setFormData={setFormData} formData={formData} errors={errors} />
+                    </> : <div className="!mt-5 w-100">
+                        <ImageUpload
+                            label="Upload Aadhaar Card (Front)"
+                            onFileSelect={(file: any) => {
+                                // Save the file in your state if needed
+                                setFatherFormDetails((prev) => ({
+                                    ...prev,
+                                    fatherAadhaarImage: file
+                                }));
+                            }}
+                            error={errors.fatherAadhaarImage}
+                            imageData={fatherFormDetails?.fatherAadhaarImage || ""}
+                        />
 
-            </div>
+                    </div>
+            }
 
-            <div className="pt-4 flex justify-center !mb-10 !mt-3">
+            {
+                isAadharUploaded ? <div className="pt-4 flex justify-center !mb-10 !mt-3">
                 <div className="w-[7.5rem]">
-                    <PrimaryButton text="Continue" type="button" onClick={handleSubmit} />
+                    <PrimaryButton text="Continue" type="button" onClick={handleSubmit}  />
+                </div>
+            </div> : <div className="pt-4 flex justify-center !mb-10 !mt-3">
+                <div className="w-[7.5rem]">
+                    <PrimaryButton text="Upload" type="button" onClick={handleUpload } isPending={isPending}/>
                 </div>
             </div>
+            }
+
+            
         </div>
     );
 };

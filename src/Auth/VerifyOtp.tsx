@@ -57,11 +57,14 @@ const VerifyOtp = () => {
             console.log(data, "data")
             toast.success(data?.message);
             localStorage.setItem("token", data?.data?.token)
-            if (data?.data?.isProfileCompleted) {
-                navigate("/")
-            } else {
-                navigate("/your-info")
+            if (data?.status == 200) {
+                if (data?.data?.isProfileCompleted) {
+                    navigate("/")
+                } else {
+                    navigate("/your-info")
+                }
             }
+
 
 
             // toast.success(data?.data?.otp);

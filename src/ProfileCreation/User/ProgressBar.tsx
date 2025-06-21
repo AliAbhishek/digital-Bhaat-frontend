@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import GirlDetail from "./GirlDetail";
 import FatherDetail from "./FatherDetails";
-import Address from "./Address";
 import Documents from "./Documents";
 import { useLocation } from "react-router-dom";
 import DonorProfileCreation from "../Donor/ProfileCreation";

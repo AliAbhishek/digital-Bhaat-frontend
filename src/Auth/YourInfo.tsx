@@ -8,12 +8,15 @@ import 'react-phone-input-2/lib/style.css'
 import InputBox from "../Components/UI/InputBox";
 import ProfileImageUpload from "../Components/UI/ProfileImageInput";
 import { getUserIdFromToken } from "../utils/decodeToken";
+import { useMutationApi } from "../customHooks/useMutationApi";
+import { endpoints } from "../api/endpoints";
+import toast from "react-hot-toast";
 
 
 
 const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
 
-    const decodedToken = getUserIdFromToken();
+    const decodedToken: any = getUserIdFromToken();
 
     const { isEditMode } = useMemo(() => {
         const params = new URLSearchParams(location.search);
@@ -32,6 +35,40 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
 
     const navigate = useNavigate()
 
+    const { mutate: updateProfileMutate, isPending: UpdateProfilePending } = useMutationApi({
+        url: endpoints.UPDATE_PROFILE.endpoint,
+        method: endpoints.UPDATE_PROFILE.method,
+        onSuccess: (data) => {
+            console.log(data, "updateProfile")
+            if (data?.status == 200) {
+                let role = decodedToken?.role
+                navigate(`/create-profile?role=${role}&aadharUpload=false`)
+            }
+
+
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message || "Something went wrong.";
+            toast.error(message);
+        },
+    });
+
+    const { mutate, isPending } = useMutationApi({
+        url: endpoints.UPLOAD_TO_S3.endpoint,
+        method: endpoints.UPLOAD_TO_S3.method,
+        onSuccess: (data) => {
+            console.log(data, "data")
+            updateProfileMutate({ fullName: formData.name, email: formData.email, profileImage: data?.data?.url })
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message || "Something went wrong.";
+            toast.error(message);
+        },
+    });
+
+
+
+
 
     const handleChange = (e: any) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -48,9 +85,11 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
             if (isEditMode) {
                 navigate("/")
             } else {
+                let formdataToSend = new FormData()
+                if (formData.profileImage == null) return
+                formdataToSend.append("file", formData.profileImage)
+                mutate(formdataToSend)
 
-                let role = "donor"
-                navigate(`/create-profile?role=${role}`)
             }
 
         }
@@ -113,22 +152,7 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
                         isRequired={true}
                     />
 
-
-
-
-
-
-
-
-
-
-
-                    <PrimaryButton text="Submit" type="submit" />
-
-
-
-
-
+                    <PrimaryButton text="Submit" type="submit" isPending={isPending || UpdateProfilePending} />
 
                 </form>
             </div>
