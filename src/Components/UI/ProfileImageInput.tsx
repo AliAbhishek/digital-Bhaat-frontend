@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { CameraIcon } from "lucide-react";
-import PrimaryButton from "./PrimaryButton";
+// import PrimaryButton from "./PrimaryButton";
 
 const ProfileImageUpload = ({ image, setImage, error }: {
   image: File | null,
@@ -17,7 +17,7 @@ const ProfileImageUpload = ({ image, setImage, error }: {
 
 
 
- 
+
   return (
     <div className="flex flex-col items-center space-y-2">
       {/* Image preview */}
@@ -26,14 +26,24 @@ const ProfileImageUpload = ({ image, setImage, error }: {
         className=" !mt-2 cursor-pointer w-24 h-24 rounded-full border-4 border-[#c98c64] overflow-hidden shadow hover:shadow-lg transition"
       >
         {image ? (
-          <>
+          typeof image == "string" ? <>
+
             <img
-              src={URL.createObjectURL(image)}
+              src={image}
               alt="Profile"
               className="w-full h-full object-cover"
             />
 
-          </>
+          </> :
+            <>
+
+              <img
+                src={URL.createObjectURL(image)}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+
+            </>
         ) : (
           <>
             <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">

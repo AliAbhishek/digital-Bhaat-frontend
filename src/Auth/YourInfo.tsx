@@ -42,7 +42,7 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
             console.log(data, "updateProfile")
             if (data?.status == 200) {
                 let role = decodedToken?.role
-                navigate(`/create-profile?role=${role}&aadharUpload=false`)
+                navigate(`/create-profile?role=${role}`)
             }
 
 
