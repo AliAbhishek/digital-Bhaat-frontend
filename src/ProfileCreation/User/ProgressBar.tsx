@@ -5,6 +5,7 @@ import Documents from "./Documents";
 import { useLocation } from "react-router-dom";
 import DonorProfileCreation from "../Donor/ProfileCreation";
 import YourInfo from "../../Auth/YourInfo";
+import ProfileSummary from "./Summary";
 
 interface StepProgressBarProps {
     steps: string[];
@@ -81,7 +82,7 @@ const Progress = () => {
         return { role: roleParam, isEditMode: editParam };
     }, [location.search]);
 
-    const steps = [ "Guardian Details","Girl Details", "Documents"];
+    const steps = [ "Guardian Details","Girl Details", "Documents","Summary"];
     // const editSteps = ["Your Information", ...steps];
     // const displayedSteps = isEditMode ? editSteps : steps;
     const displayedSteps=steps
@@ -154,7 +155,13 @@ const Progress = () => {
                 )} */}
 
                 {( currentStep === 3) && (
-                    <Documents setFormComplete={setFormComplete} edit={isEditMode ? "true" : undefined} />
+                    <Documents  
+                    setCurrentStep={setCurrentStep} currentStep={currentStep}
+                     />
+                )}
+
+                {( currentStep === 4) && (
+                    <ProfileSummary setFormComplete={setFormComplete}  setCurrentStep={setCurrentStep}  />
                 )}
             </div>
         </>

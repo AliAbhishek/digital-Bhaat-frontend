@@ -7,8 +7,9 @@ export const endpoints = {
     VERIFY_OTP:{ endpoint: "/auth/verifyOTP", method: "post" },
     UPLOAD_TO_S3 : { endpoint: "/auth/uploadImagesToS3", method: "post" },
     UPDATE_PROFILE: { endpoint: "/auth/updateProfile", method: "put" },
-    AADHAR_UPLOAD: { endpoint: "/brideProfile/aadharUpload", method: "post" },
+    FAMILY_ID_UPLOAD: { endpoint: "/brideProfile/familyIdUpload", method: "post" },
     CREATE_BRIDE_PROFILE : { endpoint: "/brideProfile/createBrideProfile", method: "post" },
     GET_BRIDE_PROFILE : { endpoint: "/brideProfile/getBrideProfile" },
+    UPDATE_BRIDE_PROFILE: { endpoint: "/brideProfile/updateBrideProfile",method:"put" }
 
 }

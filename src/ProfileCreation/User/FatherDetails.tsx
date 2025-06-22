@@ -39,15 +39,15 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
 
     });
 
-    const addressDetails = useSelector((state: any) => state.userForm.fatherAddressDetails);
+    
     const [formData, setFormData] = useState({
-        street: addressDetails?.street ?? "",
-        village: addressDetails?.village ?? "",
-        postOffice: addressDetails?.postOffice ?? "",
-        district: addressDetails?.district ?? "",
-        state: addressDetails?.state ?? "",
-        pincode: addressDetails?.pincode ?? "",
-        weddingVenue: addressDetails?.weddingVenue ?? "",
+        street:  "",
+        village: "",
+        postOffice:  "",
+        district: "",
+        state:  "",
+        pincode:  "",
+        weddingVenue:  "",
     });
 
     const disabilityOptions = [
@@ -193,8 +193,8 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
 
 
     const { mutate: createProfileMutate, isPending: createProfilePending } = useMutationApi({
-        url: endpoints.CREATE_BRIDE_PROFILE.endpoint,
-        method: endpoints.CREATE_BRIDE_PROFILE.method,
+        url: brideId ? `${endpoints.UPDATE_BRIDE_PROFILE.endpoint}/${brideId}` : endpoints.CREATE_BRIDE_PROFILE.endpoint,
+        method:brideId? endpoints.UPDATE_BRIDE_PROFILE.method : endpoints.CREATE_BRIDE_PROFILE.method,
         onSuccess: (data) => {
             console.log(data, "creasteProfile")
             if (data?.status == 200) {
@@ -211,6 +211,8 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
             toast.error(message);
         },
     });
+
+
 
 
 
@@ -251,9 +253,9 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
             // dispatch(setFatherDetails(fatherFormDetails))
             // dispatch(setFatherAddreddDetails(formData))
             const formDataToUpload = new FormData()
-            if (fatherFormDetails.profileImage == null) {
+            if (fatherFormDetails.profileImage == null || typeof fatherFormDetails.profileImage=="string") {
                 const dataToUpload = {
-                    // profileImage: data?.data?.url,
+                    profileImage: fatherFormDetails.profileImage,
                     fatherName: fatherFormDetails.fatherName,
 
                     fatherPhoneNumber: fatherFormDetails.fatherPhoneNumber,
@@ -267,6 +269,7 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
                     state: formData.state,
                     pincode: formData.pincode
                 }
+               
                 createProfileMutate({ guardianDetails: dataToUpload, fatherAadharNumber: fatherFormDetails.fatherAadharNumber, })
             } else {
                 formDataToUpload.append("file", fatherFormDetails.profileImage)
@@ -429,7 +432,7 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
                         <PrimaryButton text="Submit" type="button" onClick={handleSubmit} isPending={isPending || createProfilePending} />
                     </div>
                     <div className="w-[7.5rem]">
-                        <PrimaryButton text="Next" type="button" onClick={() => setCurrentStep(currentStep + 1)} isPending={isPending || createProfilePending} />
+                        <PrimaryButton text="Next" type="button" onClick={() => setCurrentStep(currentStep + 1)}  />
                     </div>
                 </div> : <div className="pt-4 flex justify-center !mb-10 !mt-3">
                     <div className="w-[7.5rem]">

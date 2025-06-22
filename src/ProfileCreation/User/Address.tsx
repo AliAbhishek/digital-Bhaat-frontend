@@ -121,7 +121,7 @@ const Address = ({ isBride, setFormData, formData, errors }: any) => {
                         handleChange={handleChange}
                         isRequired={true}
                         error={errors.pincode}
-                        type="number"
+                        type="text"
                     />
 
 

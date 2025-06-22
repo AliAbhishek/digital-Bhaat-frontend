@@ -16,7 +16,10 @@ const ImageUpload = ({ label, onFileSelect,error,imageData  }:any) => {
   };
 
   useEffect(()=>{
-    if(imageData){
+    if(typeof imageData=="string"){
+      setPreview(imageData);
+      setFileName("Your image");
+    }else{
       setPreview(URL.createObjectURL(imageData));
       setFileName(imageData.name);
     }
