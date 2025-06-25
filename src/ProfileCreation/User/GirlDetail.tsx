@@ -15,24 +15,24 @@ import Loader from "../../Components/UI/Loader";
 const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
     let brideId = localStorage.getItem("brideId")
     const [girlFormDetails, setGirlFormDetails] = useState({
-        brideName:"",
+        brideName: "",
         brideDOB: "",
         brideAadharNumber: "",
         bridePhoneNumber: "",
         brideAadhaarImage: null,
-        weddingDate:  "",
+        weddingDate: "",
         profileImage: null,
-        brideDisability:  "No"
+        brideDisability: "No"
     });
 
     const [formData, setFormData] = useState({
-        street:  "",
-        village:  "",
-        postOffice:  "",
-        district:  "",
-        state:  "",
-        pincode:  "",
-        weddingVenue:  "",
+        street: "",
+        village: "",
+        postOffice: "",
+        district: "",
+        state: "",
+        pincode: "",
+        weddingVenue: "",
     });
 
     // const [isVerifying, setIsVerifying] = useState(false);
@@ -66,41 +66,41 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
         setErrors({ ...errors, [name]: "" });
     };
 
-        const { data: brideData, isLoading } = useQueryApi({
-            key: ["brideDetails", brideId],
-            url: `${endpoints.GET_BRIDE_PROFILE.endpoint}/${brideId}`,
-            enabled: !!brideId,
-        });
-    
-        useEffect(() => {
-            if (brideData?.data?.guardianDetails) {
-                const bride = brideData.data.brideDetails;
-    
-                setGirlFormDetails({
-                    ...bride,
-                    guardianDisability: bride.brideDisability ? "Yes" : "No",
-                    
-                    brideAadharNumber:brideData.data?.brideAadharNumber,
-                    profileImage:brideData.data?.brideProfileImageUrl
-                });
-    
-                setFormData((prev) => ({
-                    ...prev,
-                    street: bride.street || "",
-                    village: bride.village || "",
-                    postOffice: bride.postOffice || "",
-                    district: bride.district || "",
-                    state: bride.state || "",
-                    pincode: bride.pincode || "",
-                }));
-            }
-        }, [brideData]);
+    const { data: brideData, isLoading } = useQueryApi({
+        key: ["brideDetails", brideId],
+        url: `${endpoints.GET_BRIDE_PROFILE.endpoint}/${brideId}`,
+        enabled: !!brideId,
+    });
+
+    useEffect(() => {
+        if (brideData?.data?.guardianDetails) {
+            const bride = brideData?.data?.brideDetails;
+
+            setGirlFormDetails({
+                ...bride,
+                guardianDisability: bride?.brideDisability ? "Yes" : "No",
+
+                brideAadharNumber: brideData?.data?.brideAadharNumber,
+                profileImage: brideData?.data?.brideProfileImageUrl
+            });
+
+            setFormData((prev) => ({
+                ...prev,
+                street: bride?.street || "",
+                village: bride?.village || "",
+                postOffice: bride?.postOffice || "",
+                district: bride?.district || "",
+                state: bride?.state || "",
+                pincode: bride?.pincode || "",
+            }));
+        }
+    }, [brideData]);
 
     const validate = () => {
         const newErrors: any = {};
 
         // Name
-        if (!girlFormDetails.brideName.trim()) {
+        if (!girlFormDetails.brideName?.trim()) {
             newErrors.brideName = "Full name is required.";
         } else if (!/^[a-zA-Z\s]+$/.test(girlFormDetails.brideName)) {
             newErrors.brideName = "Name must contain only letters.";
@@ -169,9 +169,9 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
         url: endpoints.UPLOAD_TO_S3.endpoint,
         method: endpoints.UPLOAD_TO_S3.method,
         onSuccess: (data) => {
-           
+
             const dataToUpload = {
-                step: currentStep,
+                // step: currentStep,
                 // ...(typeof girlFormDetails.profileImage === "string" && {
                 //     profileImage: girlFormDetails.profileImage,
                 // }),
@@ -191,7 +191,7 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
                 state: formData.state,
                 pincode: formData.pincode
             }
-            updateProfileMutate({ brideDetails: dataToUpload, brideAadharNumber: girlFormDetails.brideAadharNumber,step: currentStep })
+            updateProfileMutate({ brideDetails: dataToUpload, brideAadharNumber: girlFormDetails.brideAadharNumber, step: currentStep })
             // updateProfileMutate({ fullName: formData.name, email: formData.email, profileImage: data?.data?.url })
         },
         onError: (error) => {
@@ -232,10 +232,22 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
             // console.log("✅ Valid form submitted:", fatherFormDetails);
             // dispatch(setFatherDetails(fatherFormDetails))
             // dispatch(setFatherAddreddDetails(formData))
+            
+            const today = new Date();
+            const sixtyDaysFromNow = new Date();
+            // const ninetyDaysFromNow = new Date();
+
+            sixtyDaysFromNow.setDate(today.getDate() + 60);
+            // ninetyDaysFromNow.setDate(today.getDate() + 90);
+            const selectedDate = new Date(girlFormDetails.weddingDate);
+            if (selectedDate < sixtyDaysFromNow ) {
+                return toast.error("⚠️ Wedding date must be 60 days from today.If you want to help get in touch with out support.We will help you.");
+            }
+        
             const formDataToUpload = new FormData()
             if (girlFormDetails.profileImage == null || typeof girlFormDetails.profileImage == "string") {
                 const dataToUpload = {
-                    
+
                     profileImage: girlFormDetails.profileImage,
                     brideDOB: girlFormDetails.brideDOB,
                     brideName: girlFormDetails.brideName,
@@ -253,7 +265,7 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
                     pincode: formData.pincode
                 }
 
-                updateProfileMutate({ brideDetails: dataToUpload, brideAadharNumber: girlFormDetails.brideAadharNumber,step: currentStep })
+                updateProfileMutate({ brideDetails: dataToUpload, brideAadharNumber: girlFormDetails.brideAadharNumber, step: currentStep })
             } else {
                 formDataToUpload.append("file", girlFormDetails.profileImage)
                 mutate(formDataToUpload)

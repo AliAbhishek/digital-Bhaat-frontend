@@ -32,6 +32,7 @@ export default function ProfileSummary({ setFormComplete, setCurrentStep }: any)
                 maskedBrideAadhar,
                 maskedGuardianAadhar,
                 familyIdImageUrl,
+                rationCardImageUrl,
                 brideProfileImageUrl,
                 guardianImageUrl,
             } = brideData.data;
@@ -43,6 +44,7 @@ export default function ProfileSummary({ setFormComplete, setCurrentStep }: any)
                 maskedBrideAadhar,
                 maskedGuardianAadhar,
                 familyIdImageUrl,
+                rationCardImageUrl,
                 brideProfileImageUrl,
                 guardianImageUrl,
             });
@@ -103,6 +105,7 @@ export default function ProfileSummary({ setFormComplete, setCurrentStep }: any)
         maskedBrideAadhar,
         maskedGuardianAadhar,
         familyIdImageUrl,
+        rationCardImageUrl,
         brideProfileImageUrl,
         guardianImageUrl,
     } = profileData;
@@ -130,13 +133,16 @@ export default function ProfileSummary({ setFormComplete, setCurrentStep }: any)
                                     <p><strong>Wedding Date:</strong> {brideDetails?.weddingDate}</p>
                                     <p><strong>Aadhar:</strong> {maskedBrideAadhar}</p>
                                 </div>
-                                <div className="flex justify-center">
-                                    <img
-                                        src={brideProfileImageUrl}
-                                        alt="Bride"
-                                        className="h-56 w-56 object-cover rounded-xl border border-[#c98c64] shadow"
-                                    />
-                                </div>
+                                {
+                                    brideProfileImageUrl && <div className="flex justify-center">
+                                        <img
+                                            src={brideProfileImageUrl}
+                                            alt="Bride"
+                                            className="h-56 w-56 object-cover rounded-xl border border-[#c98c64] shadow"
+                                        />
+                                    </div>
+                                }
+
                             </div>
                         </section>
 
@@ -152,13 +158,16 @@ export default function ProfileSummary({ setFormComplete, setCurrentStep }: any)
                                     <p><strong>Single Parent:</strong> {guardianDetails?.isSingleParent ? 'Yes' : 'No'}</p>
                                     <p><strong>Aadhar:</strong> {maskedGuardianAadhar}</p>
                                 </div>
-                                <div className="flex justify-center">
-                                    <img
-                                        src={guardianImageUrl}
-                                        alt="Guardian"
-                                        className="h-56 w-56 object-cover rounded-xl border border-[#c98c64] shadow"
-                                    />
-                                </div>
+                                {
+                                    guardianImageUrl && <div className="flex justify-center">
+                                        <img
+                                            src={guardianImageUrl}
+                                            alt="Guardian"
+                                            className="h-56 w-56 object-cover rounded-xl border border-[#c98c64] shadow"
+                                        />
+                                    </div>
+                                }
+
                             </div>
                         </section>
 
@@ -190,7 +199,7 @@ export default function ProfileSummary({ setFormComplete, setCurrentStep }: any)
                                 <div className="flex-shrink-0 w-full md:w-60 text-center">
                                     {/* <h4 className="text-md font-semibold text-[#c98c64] mb-2">🆔 Family ID</h4> */}
                                     <img
-                                        src={familyIdImageUrl}
+                                        src={familyIdImageUrl || rationCardImageUrl}
                                         alt="Family ID"
                                         className="h-56 w-auto rounded-lg border border-[#c98c64] shadow"
                                     />
@@ -198,8 +207,8 @@ export default function ProfileSummary({ setFormComplete, setCurrentStep }: any)
                             </div>
                         </section>
 
-                        <p className="text-sm text-[#8b5c3d] bg-[#fef9f6] border border-[#c98c64] rounded-md px-4 py-2 text-center mt-4 font-medium shadow-sm">
-                            ⚠️ <strong className="text-[#8b5c3d]"><SubHeading title="Once submitted, the form cannot be edited." /></strong><SubHeading title='Please review carefully before final submission.' />
+                        <p className="text-sm text-[#8b5c3d] bg-[#fef9f6] border border-[#c98c64] rounded-md px-4 py-2 text-center mt-4 font-medium shadow-sm flex">
+                            ⚠️ <strong className="text-[#8b5c3d]"><SubHeading title="Once submitted, the form cannot be edited." /></strong><SubHeading title=' Please review carefully before final submission.' />
                         </p>
 
                         {/* Buttons */}

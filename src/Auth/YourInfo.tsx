@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import logoImage from "../assets/transparentLogo.png"
 import Heading from "../Components/UI/Heading";
 import Moto from "../Components/UI/Moto";
@@ -11,6 +11,8 @@ import { getUserIdFromToken } from "../utils/decodeToken";
 import { useMutationApi } from "../customHooks/useMutationApi";
 import { endpoints } from "../api/endpoints";
 import toast from "react-hot-toast";
+import { useQueryApi } from "../customHooks/useFetchData";
+import Loader from "../Components/UI/Loader";
 
 
 
@@ -35,14 +37,34 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
 
     const navigate = useNavigate()
 
+    const { data: userData, isLoading: userIsLoading } = useQueryApi({
+
+        key: ["userDetails"],
+        url: `${endpoints.GET_USER_PROFILE.endpoint}`,
+
+    });
+
+    useEffect(() => {
+        console.log(userData, "userData")
+        if (userData?.status == 200) {
+            setFormData({ ...formData, name: userData?.data?.fullName, email: userData?.data?.email, profileImage: userData?.data?.profileImageUrl })
+        }
+
+    }, [userData])
+
     const { mutate: updateProfileMutate, isPending: UpdateProfilePending } = useMutationApi({
         url: endpoints.UPDATE_PROFILE.endpoint,
         method: endpoints.UPDATE_PROFILE.method,
         onSuccess: (data) => {
             console.log(data, "updateProfile")
             if (data?.status == 200) {
-                let role = decodedToken?.role
-                navigate(`/create-profile?role=${role}`)
+                if (isEditMode) {
+                    navigate("/")
+                } else {
+                    let role = decodedToken?.role
+                    navigate(`/create-profile?role=${role}`)
+                }
+
             }
 
 
@@ -83,7 +105,15 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
         } else {
             // console.log(formData);
             if (isEditMode) {
-                navigate("/")
+                if (typeof formData?.profileImage == "string") {
+                    updateProfileMutate({ fullName: formData.name, email: formData.email, profileImage: formData?.profileImage })
+                } else {
+                    let formdataToSend = new FormData()
+                    if (formData.profileImage == null) return
+                    formdataToSend.append("file", formData.profileImage)
+                    mutate(formdataToSend)
+                }
+
             } else {
                 let formdataToSend = new FormData()
                 if (formData.profileImage == null) return
@@ -98,7 +128,7 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
 
     }
 
-
+    if (userIsLoading) (<Loader />)
 
     return (
         <div className="flex justify-center items-center min-h-screen gap-30 w-full">

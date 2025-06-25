@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SearchBar from './Searchbar';
 
 const Header = () => {
-    const token:any = localStorage.getItem("token")
+    const token: any = localStorage.getItem("token")
     const [menuOpen, setMenuOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -27,6 +27,13 @@ const Header = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const handleLogOut =() => {
+        console.log("logout")
+            localStorage.clear()
+            navigate("/")
+        }
+
 
     return (
         <header className="fixed top-0 left-0 w-full z-50 bg-[#000000e6] backdrop-blur-sm px-4 md:px-8 py-3 border-b border-[#2c2c2c]">
@@ -62,88 +69,88 @@ const Header = () => {
                     </button>
                     {
                         !token && <button
-                        className="py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
-                        onClick={() => handleNav('/signUp')}
-                    >
-                        Login / Sign Up
-                    </button>
-                    }
-                
-                    {
-                        token &&   
-                    <div className="relative" ref={dropdownRef}>
-                        <button
-                            className="text-[#fef9f6] hover:text-[#c98c64] transition"
-                            onClick={() => setDropdownOpen(!dropdownOpen)}
-                            aria-label="Profile Menu"
+                            className="py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
+                            onClick={() => handleNav('/signUp')}
                         >
-                            <User className="w-5 h-5" />
+                            Login / Sign Up
                         </button>
-
-                        {dropdownOpen && (
-                            <div className="absolute right-0 mt-2 w-44 bg-[#fef9f6] text-[#8b5c3d] rounded-2xl shadow-lg py-2 z-50 animate-fade-in">
-                                <button
-                                    className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
-                                    onClick={() =>{ 
-                                        // if(role==user){
-                                             handleNav("/your-info?edit=true")
-                                        // }else{
-                                            // handleNav('/create-profile?role=donor&&edit=true')
-                                        // }
-                                        
-                                    
-                                    }}
-                                >
-                                    <User className="w-4 h-4" />
-                                    Profile
-                                </button>
-                                <button
-                                    className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
-                                    onClick={() => handleNav('/helping-hand')}
-                                >
-                                    🤝
-                                    Helping Hand
-                                </button>
-                                <button
-                                    className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
-                                    onClick={() => handleNav('/settings')}
-                                >
-                                    <Settings className="w-4 h-4" />
-                                    Settings
-                                </button>
-
-                                <button
-                                    className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
-                                    onClick={() => {
-                                        // handle logout logic here
-                                        console.log("Logout clicked");
-                                    }}
-                                >
-                                    <LogOut className="w-4 h-4" />
-                                    Logout
-                                </button>
-                            </div>
-                        )}
-
-                    </div>
                     }
-                  
 
-                  
+                    {
+                        token &&
+                        <div className="relative" ref={dropdownRef}>
+                            <button
+                                className="text-[#fef9f6] hover:text-[#c98c64] transition"
+                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                aria-label="Profile Menu"
+                            >
+                                <User className="w-5 h-5" />
+                            </button>
+
+                            {dropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-44 bg-[#fef9f6] text-[#8b5c3d] rounded-2xl shadow-lg py-2 z-50 animate-fade-in">
+                                    <button
+                                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
+                                        onClick={() => {
+                                            // if(role==user){
+                                            handleNav("/your-info?edit=true")
+                                            // }else{
+                                            // handleNav('/create-profile?role=donor&&edit=true')
+                                            // }
+
+
+                                        }}
+                                    >
+                                        <User className="w-4 h-4" />
+                                        Profile
+                                    </button>
+                                    <button
+                                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
+                                        onClick={() => handleNav('/helping-hand')}
+                                    >
+                                        🤝
+                                        Helping Hand
+                                    </button>
+                                    <button
+                                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
+                                        onClick={() => handleNav('/settings')}
+                                    >
+                                        <Settings className="w-4 h-4" />
+                                        Settings
+                                    </button>
+
+                                    <button
+                                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
+                                        onClick={
+                                            // handle logout logic here
+                                            handleLogOut
+                                        }
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+
+                        </div>
+                    }
+
+
+
                 </div>
 
                 {/* Mobile Menu Toggle */}
                 <div className="md:hidden flex items-center space-x-4">
                     {
-                        token &&  <button
-                        className="text-[#fef9f6]"
-                        onClick={() =>  handleNav("/your-info?edit=true")}
-                        aria-label="Profile"
-                    >
-                        <User className="w-5 h-5" />
-                    </button>
+                        token && <button
+                            className="text-[#fef9f6]"
+                            onClick={() => handleNav("/your-info?edit=true")}
+                            aria-label="Profile"
+                        >
+                            <User className="w-5 h-5" />
+                        </button>
                     }
-                   
+
                     <button onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
                         {menuOpen ? (
                             <X className="w-6 h-6 text-[#fef9f6]" />
@@ -183,25 +190,22 @@ const Header = () => {
                         </button>
                         {
                             !token && <button
-                            className="block w-full py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
-                            onClick={() => handleNav('/signUp')}
-                        >
-                            Login / Sign Up
-                        </button>
+                                className="block w-full py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
+                                onClick={() => handleNav('/signUp')}
+                            >
+                                Login / Sign Up
+                            </button>
                         }
                         {
-                            token &&  <button
-                            className="block w-full py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
-                             onClick={() => {
-                                        // handle logout logic here
-                                        console.log("Logout clicked");
-                                    }}
-                        >
-                            Logout
-                        </button>
-                        } 
-                       
-                        
+                            token && <button
+                                className="block w-full py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
+                                onClick={handleLogOut}
+                            >
+                                Logout
+                            </button>
+                        }
+
+
                     </motion.div>
                 )}
             </AnimatePresence>

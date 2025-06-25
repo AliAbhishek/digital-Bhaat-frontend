@@ -20,7 +20,7 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
 
 
     const [formData, setFormData] = useState({
-
+        rationCardImage: null,
         familyIdImage: null,
         consentGiven: false,
         isTermAndConditionAccepted: false
@@ -29,7 +29,7 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
 
 
     const [error, setErrors] = useState({
-        familyIdImage: "",
+
         consentGiven: "",
         isTermAndConditionAccepted: ""
     })
@@ -37,9 +37,9 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
     const validate = () => {
         const newErrors: any = {};
 
-        if (!formData.familyIdImage) {
-            newErrors.familyIdImage = "Family id is required."
-        }
+        // if (!formData.familyIdImage) {
+        //     newErrors.familyIdImage = "Family id is required."
+        // }
 
         if (!formData.consentGiven) {
             newErrors.consentGiven = "Please give your consent."
@@ -76,8 +76,8 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
     });
 
     const { mutate, isPending } = useMutationApi({
-        url: endpoints.UPLOAD_TO_S3.endpoint,
-        method: endpoints.UPLOAD_TO_S3.method,
+        url: formData.familyIdImage ? endpoints.FAMILY_ID_UPLOAD.endpoint : endpoints.RATION_CARD_UPLOAD.endpoint,
+        method: formData.familyIdImage ? endpoints.FAMILY_ID_UPLOAD.method : endpoints.RATION_CARD_UPLOAD.method,
         onSuccess: (data) => {
             updateProfileMutate({ familyIdImage: data?.data?.url, step: 3 })
             // updateProfileMutate({ fullName: formData.name, email: formData.email, profileImage: data?.data?.url })
@@ -87,6 +87,21 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
             toast.error(message);
         },
     });
+
+    const { mutate: rationCardMutate, isPending: rationCardIsPending } = useMutationApi({
+        url: endpoints.RATION_CARD_UPLOAD.endpoint,
+        method: endpoints.RATION_CARD_UPLOAD.method,
+        onSuccess: (data) => {
+            updateProfileMutate({ rationCardImage: data?.data?.url, step: 3 })
+            // updateProfileMutate({ fullName: formData.name, email: formData.email, profileImage: data?.data?.url })
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message || "Something went wrong.";
+            toast.error(message);
+        },
+    });
+
+
 
     const { data: brideData, isLoading } = useQueryApi({
         key: ["brideDetails", brideId],
@@ -101,7 +116,8 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
 
             setFormData({
                 ...formData,
-                familyIdImage: brideData?.data?.familyIdImageUrl
+                familyIdImage: brideData?.data?.familyIdImageUrl,
+                rationCardImage: brideData?.data?.rationCardImageUrl
 
             });
 
@@ -109,33 +125,43 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
         }
     }, [brideData]);
 
+    console.log(formData, "formdata")
+
 
     const handleSubmit = () => {
-        if (validate()) {
-            // console.log("✅ Valid form submitted:", fatherFormDetails);
+        if (!validate()) return;
 
-            if (formData?.familyIdImage == null || typeof formData.familyIdImage == "string") {
-                setCurrentStep(currentStep + 1)
-            } else {
-                let formDataToUpload = new FormData()
-                formDataToUpload.append("file", formData.familyIdImage)
-                mutate(formDataToUpload)
+        const hasFamilyId = !!formData.familyIdImage;
+        const hasRationCard = !!formData.rationCardImage;
 
-            }
+        if (!hasFamilyId && !hasRationCard) {
+            return toast.error("Please upload one ID proof: Family ID or Ration Card.");
+        }
 
+        if (hasFamilyId && hasRationCard) {
+            return toast.error("Only upload one ID proof – either Family ID or Ration Card, not both.");
+        }
 
+        const isAlreadyUploaded =
+            (hasFamilyId && typeof formData.familyIdImage === 'string') ||
+            (hasRationCard && typeof formData.rationCardImage === 'string');
 
+        if (isAlreadyUploaded) {
+            // Image already uploaded, move to next step
+            return setCurrentStep(currentStep + 1);
+        }
 
-
-            // setFormComplete(true)
-            // {
-            //     edit == "true" ? navigate("/") : triggerFireworks()
-            // }
-
-            // setCurrentStep(currentStep + 1)
-            // Continue to next step
+        // New image to be uploaded
+        const formDataToUpload = new FormData();
+        if (hasFamilyId && formData.familyIdImage instanceof File) {
+            formDataToUpload.append("file", formData.familyIdImage);
+            mutate(formDataToUpload);
+        } else if (hasRationCard && formData.rationCardImage instanceof File) {
+            formDataToUpload.append("file", formData.rationCardImage);
+            rationCardMutate(formDataToUpload);
         }
     };
+
 
 
 
@@ -147,25 +173,25 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
                 <Heading title="Documents" />
             </div>
 
-                {/* <div className="!mt-5 ">
-                            <ImageUpload
-                                label="Upload Ration Card (Front) (Optional)"
-                                onFileSelect={(file: any) => {
-                                    // Save the file in your state if needed
-                                    setFormData((prev) => ({
-                                        ...prev,
-                                        rationCardImage: file
-                                    }));
-                                }}
+                <div className="!mt-5 ">
+                    <ImageUpload
+                        label="Upload Ration Card"
+                        onFileSelect={(file: any) => {
+                            // Save the file in your state if needed
+                            setFormData((prev) => ({
+                                ...prev,
+                                rationCardImage: file
+                            }));
+                        }}
 
-                                imageData={formData?.rationCardImage || ""}
-                            />
+                        imageData={formData?.rationCardImage || ""}
+                    />
 
-                        </div> */}
+                </div>
 
                 <div className="!mt-5 ">
                     <ImageUpload
-                        label="Upload Family Id (Front)"
+                        label="Upload Family Id"
                         onFileSelect={(file: any) => {
                             // Save the file in your state if needed
                             setFormData((prev) => ({
@@ -174,7 +200,7 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
                             }));
                         }}
                         // error={errors.fatherAadhaarImage}
-                        error={error?.familyIdImage}
+                        // error={error?.familyIdImage}
                         imageData={formData?.familyIdImage || ""}
                     />
 
@@ -240,7 +266,7 @@ const Documents = ({ setCurrentStep, currentStep }: any) => {
 
                 <div className="pt-4 flex justify-center !mb-10 !mt-3">
                     <div className="w-[7.5rem]">
-                        <PrimaryButton text="Continue" type="button" onClick={handleSubmit} isPending={isPending || updateProfilePending} />
+                        <PrimaryButton text="Continue" type="button" onClick={handleSubmit} isPending={isPending || updateProfilePending || rationCardIsPending} />
                     </div>
                 </div>   </div>
 

@@ -7,41 +7,25 @@ import CardHeading from "../Components/UI/CardHeading";
 import SubHeading from "../Components/UI/SubHeading";
 import StatusButtons from "../Components/UI/StatusButtons";
 import { SimpleText } from "../Components/UI/SimpleText";
+import { useQueryApi } from "../customHooks/useFetchData";
+import { endpoints } from "../api/endpoints";
+import { Loader } from "lucide-react";
+import NoDataFound from "../Components/UI/NoDataFound";
 
-const mockHelpLogs = [
-    {
-        id: 1,
-        girlName: "Ayesha",
-        fatherName: "Imran Khan",
-        location: "Lucknow, Uttar Pradesh",
-        status: "Under Review",
-    },
-    {
-        id: 2,
-        girlName: "Meena Kumari",
-        fatherName: "Ramesh Kumar",
-        location: "Patna, Bihar",
-        status: "Approved",
-    },
-    {
-        id: 2,
-        girlName: "Meena Kumari",
-        fatherName: "Ramesh Kumar",
-        location: "Patna, Bihar",
-        status: "Approved",
 
-    },
-    {
-        id: 1,
-        girlName: "Ayesha",
-        fatherName: "Imran Khan",
-        location: "Lucknow, Uttar Pradesh",
-        status: "Under Review",
-    },
-];
 
 const HelpingHand = () => {
     const navigate = useNavigate();
+
+    const { data: bridesData, isLoading } = useQueryApi({
+        key: ['brideDetails'],
+        url: `${endpoints.GET_BRIDE_PROFILES.endpoint}`,
+
+    });
+
+    console.log(bridesData, "data")
+
+    if (isLoading) return <Loader />;
 
     return (
         <div className="min-h-screen w-screen bg-[#000000e6] px-4 py-8 text-[#fef9f6]">
@@ -66,8 +50,8 @@ const HelpingHand = () => {
                     {/* Vertical thread line */}
                     <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-[#8b5c3d]/50 z-0" />
 
-                    <div className="space-y-20">
-                        {mockHelpLogs?.map((log, index) => {
+                    <div className="space-y-20" >
+                        {bridesData?.data?.map((log: any, index: any) => {
                             const isLeft = index % 2 === 0;
 
                             return (
@@ -77,7 +61,11 @@ const HelpingHand = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                                    className={`relative z-10 w-full flex ${isLeft ? "justify-start" : "justify-end"}`}
+                                    className={`cursor-pointer relative z-10 w-full flex ${isLeft ? "justify-start" : "justify-end"}`}
+                                    onClick={() => {
+                                        const encodedId = btoa(log?._id);
+                                        navigate(`/bride-details?id=${encodedId}`)
+                                    }}
                                 >
                                     <motion.div
                                         whileHover={{
@@ -99,13 +87,20 @@ const HelpingHand = () => {
                                             <div className="mt-2">❤️</div> <div ><SimpleText textColor="black" title="You helped" /></div>
                                         </motion.div>
 
-                                        <CardHeading title={log.girlName} />
+                                        <CardHeading title={log?.brideDetails?.brideName} />
                                         <h3 className="text- text-[#c98c64] mt-1 flex gap-1">
-                                            <SubHeading title="Father" /> : <SubHeading title={log.fatherName} />
+                                            <p className="font-bold"><SubHeading title="Guardian" /></p>  :  <SubHeading title={log?.guardianDetails?.fatherName} />
                                         </h3>
-                                        <SubHeading title={log.location} />
-                                        <div className="flex gap-2 "><StatusButtons title={log.status} />
-                                            <div className="cursor-pointer" onClick={()=>navigate("/create-profile?role=user&edit=true")} ><StatusButtons title="Edit" /></div></div>
+                                        <SubHeading title={log?.brideDetails?.village + ", " + log?.brideDetails?.district + ", " + log?.brideDetails?.state + ", " + log?.brideDetails?.pincode} />
+                                        <div onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (log?.saveAsDraft) {
+                                                localStorage.setItem("brideId", log?._id)
+                                                navigate("/create-profile")
+                                            }
+                                        }} className={ `flex gap-2 ${log?.saveAsDraft && "cursor-pointer"}`}><StatusButtons title={log?.profileStatus} /> {log?.saveAsDraft && <StatusButtons title="Draft" />}
+                                            {/* <div className="cursor-pointer" onClick={()=>navigate("/create-profile?role=user&edit=true")} ><StatusButtons title="Edit" /></div> */}
+                                        </div>
 
 
                                     </motion.div>
@@ -125,18 +120,11 @@ const HelpingHand = () => {
                     </div>
                 </div>
 
-                {mockHelpLogs.length === 0 && (
-                    <div className="text-center mt-20">
-                        <p className="text-lg text-[#c98c64] mb-4">
-                            No families added yet.
-                        </p>
-                        <PrimaryButton
-                            text="Start Helping"
-                            type="button"
-                            onClick={() => navigate("/register-family")}
-                        />
-                    </div>
+                {bridesData?.data.length === 0 && (
+                    <NoDataFound emoji="🤝" title="No Families Found" tagLine="You haven’t helped any families yet. Let’s make a difference together!" button={<PrimaryButton text="Start Helping" type="button" onClick={() => navigate("/create-profile")} />} />
+
                 )}
+
             </div>
         </div>
     );

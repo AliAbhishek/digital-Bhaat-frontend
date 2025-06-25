@@ -6,6 +6,7 @@ import YourInfo from "./Auth/YourInfo"
 import Home from "./Home/Home"
 import Profile from "./Profile/Profile"
 import HelpingHand from "./HelpingHands.tsx/HelpingHand"
+import BrideProfileDetails from "./BrideDetails/BrideDetails"
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
           <Route path="/create-profile" element={<Progress/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/helping-hand" element={<HelpingHand/>}/>
-          
+          <Route path="/bride-details" element={<BrideProfileDetails/>}/>
         </Routes>
       </Router>
     </div>
