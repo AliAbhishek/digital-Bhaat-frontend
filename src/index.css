@@ -1,4 +1,6 @@
+
 @import "tailwindcss";
+
 
 /* * {
   margin: 0;
@@ -10,9 +12,13 @@
 /* body {
   @apply flex justify-center items-center min-h-screen bg-[#000000e6];
 } */
+/* body {
+  font-family: 'Anek Devanagari', sans-serif;
+} */
+
 
 body {
-  @apply bg-[#000000e6] min-h-screen flex justify-center items-center
+  @apply bg-[#000000e6]  flex justify-center items-center
 }
 
 .box {
@@ -75,7 +81,7 @@ body {
   max-height: 100%;
   overflow-y: auto;
   scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: #8b5c3d transparent; /* Brand colored scrollbar */
+  scrollbar-color: #c98c64 transparent; /* Brand colored scrollbar */
 
   /* Optional smooth scrolling */
   scroll-behavior: smooth;
@@ -91,13 +97,13 @@ body {
 }
 
 .box form::-webkit-scrollbar-thumb {
-  background-color: #8b5c3d;
+  background-color: #c98c64;
   border-radius: 10px;
 }
 
 
 .box form h2 {
-  color: #8b5c3d;
+  color: #c98c64;
   font-weight: 600;
   text-align: center;
   letter-spacing: 0.05em;
@@ -130,7 +136,7 @@ body {
   background: transparent;
   outline: none;
   border: none;
-  color: #8b5c3d;
+  color: #c98c64;
   font-size: 1em;
   z-index: 10;
 }
@@ -148,7 +154,7 @@ body {
 
 .inputBox input:valid ~ span,
 .inputBox input ~ span {
-  color: #8b5c3d;
+  color: #c98c64;
   font-size: 0.75em;
   transform: translateY(-34px);
 }
@@ -186,7 +192,7 @@ body {
 
 .links a:hover,
 .links a:nth-child(2) {
-  color: #8b5c3d;
+  color: #c98c64;
 }
 
 #submit {
@@ -220,5 +226,5 @@ body {
 }
 
 #submit:hover {
-  background-color: #8b5c3d;
+  background-color: #c98c64;
 }
