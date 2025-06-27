@@ -3,7 +3,7 @@
 
 function Heading({title}:{title:string}) {
   return (
-    <h2 className="text-[#c98c64]">{title}</h2>
+    <h2 className="text-xl text-[#c98c64] font-bold">{title}</h2>
   )
 }
 
