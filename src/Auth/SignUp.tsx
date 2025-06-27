@@ -27,8 +27,8 @@ const SignUp = () => {
         onSuccess: (data) => {
             console.log(data, "data")
             toast.success(data?.message);
-            data?.data?.otp &&  toast.success(data?.data?.otp);
-           
+            data?.data?.otp && toast.success(data?.data?.otp);
+
             const encodedId = btoa(data?.data?.userId);
             navigate(`/verify-otp?id=${encodedId}`);
         },
@@ -79,24 +79,30 @@ const SignUp = () => {
 
 
     return (
-        <div className="flex justify-center items-center min-h-screen gap-30 w-full">
-            <div className="flex flex-col items-center text-center space-y-6 max-w-xl mx-auto px-4">
+        // Adjusted main container for responsiveness: flex-col on mobile, flex-row on medium screens and up.
+        // Added responsive padding (px, py) and gap between sections.
+        <div className="flex flex-col md:flex-row justify-center items-center min-h-screen w-full py-8 px-4 md:px-6 lg:px-12 gap-y-12 md:gap-x-20">
+            {/* Left Section: Logo & Moto */}
+            <div className="flex flex-col items-center text-center space-y-6 max-w-sm md:max-w-md lg:max-w-xl mx-auto">
                 <div className="relative">
                     <img
                         src={logoImage}
                         alt="Logo"
-                        className="max-w-[380px] max-h-[300px] object-contain drop-shadow-xl rounded-xl transition-transform duration-300 hover:scale-105"
+                        // Responsive image sizing: smaller on mobile, larger on tablet/desktop
+                        className="w-full h-auto max-w-[200px] max-h-[160px] sm:max-w-[280px] sm:max-h-[220px] md:max-w-[380px] md:max-h-[300px] object-contain drop-shadow-xl rounded-xl transition-transform duration-300 hover:scale-105"
                     />
 
                     {/* Glowing peach halo behind logo */}
                     <div className="absolute inset-0 rounded-full blur-2xl opacity-40 bg-[#c98c64] z-[-1] mt-1"></div>
                 </div>
 
-                <Moto />
+                <Moto /> {/* Assuming Moto component is already responsive or simple text */}
             </div>
 
 
-            <div className="box ">
+            {/* Right Section: Form */}
+            {/* Added responsive max-width and padding to the form container */}
+            <div className="box w-full  max-w-sm md:max-w-md lg:max-w-lg p-6 sm:p-8 md:p-10">
                 <span className="borderLine"></span>
                 <form onSubmit={signUp ? handleSignUp : handleLogin}>
                     {
@@ -104,7 +110,9 @@ const SignUp = () => {
                     }
 
                     {
-                        signUp && <div className="flex gap-4 justify-center !mt-8">
+                        signUp &&
+                        // Role selection buttons: stack on small, row on small-medium and up
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center !mt-8">
                             <RoleSelectButton
                                 text="I Need Help"
                                 isSelected={role === "user"}
@@ -122,9 +130,6 @@ const SignUp = () => {
 
 
                     <div className="w-full !mt-10">
-                        {/* <label className="block text-sm font-medium text-white mb-2">
-                            Phone Number
-                        </label> */}
                         <div className="!mb-4"> <SubHeading title="Phone Number" /></div>
 
                         <PhoneInput
@@ -139,59 +144,31 @@ const SignUp = () => {
                                     phoneNumber: phoneWithoutCode,
                                 });
                             }}
+                            // inputClass already has !w-full, ensuring full width
                             inputClass="!w-full !bg-transparent !text-white !border !border-gray-600 !rounded-xl !py-2 !pl-12 !pr-4 focus:!outline-none focus:!ring-1 focus:!ring-[#c98c64] placeholder:text-gray-400"
-                            containerClass="!w-full"
-                            buttonClass="!bg-transparent !border-none"
-                            dropdownClass="!bg-[#191919] !text-white"
+                            containerClass="!w-full" // Ensures the container takes full available width
+                            buttonClass="!bg-transparent !border-none !rounded-l-xl focus:!outline-none focus:!ring-1 focus:!ring-[#c98c64]" // Added rounding and focus styles
+                            dropdownClass="!bg-[#191919] !text-white !rounded-lg" // Added rounding
                         />
 
                     </div>
 
 
-
-
-                    {/* <InputBox
-                        value={formData.email}
-                        handleChange={handleChange}
-                        name="email"
-                        label="Email"
-                        type="email"
-                        isRequired={true}
-                    /> */}
-
-                    {/* <PasswordInput
-                        value={formData.password}
-                        handleChange={handleChange}
-                        name="password"
-                        label="Password"
-                        isRequired={true}
-                    /> */}
-
-
-                    {/* <div className="links">
-                        <a href="#">Forgot Password</a>
-                       
-                    </div> */}
-                    {/* {
-                        !signUp &&
-                        <SimpleText title="Forgot Password" />
-                    } */}
-
-
-
-
-                    {/* <input type="submit" id="submit" value="Login" /> */}
-                    {
-                        signUp && <><PrimaryButton isPending={isPending} text="SignUp" type="submit" />
-                            <SecondaryButton text="Login" type="button" onClick={() => setSignUp(false)} />
-                        </>
-                    }
-                    {
-                        !signUp && <><PrimaryButton isPending={isPending} text="Login" type="submit" />
-                            <SecondaryButton text="SignUp" type="button" onClick={() => setSignUp(true)} />
-                        </>
-                    }
-
+                    {/* Action Buttons: Added space-y for vertical stacking on smaller screens if needed */}
+                    <div className="mt-8 space-y-4">
+                        {
+                            signUp && <>
+                                <PrimaryButton isPending={isPending} text="SignUp" type="submit" />
+                                <SecondaryButton text="Login" type="button" onClick={() => setSignUp(false)} />
+                            </>
+                        }
+                        {
+                            !signUp && <>
+                                <PrimaryButton isPending={isPending} text="Login" type="submit" />
+                                <SecondaryButton text="SignUp" type="button" onClick={() => setSignUp(true)} />
+                            </>
+                        }
+                    </div>
 
 
                 </form>
