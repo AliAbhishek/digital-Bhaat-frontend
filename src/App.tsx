@@ -4,7 +4,6 @@ import VerifyOtp from "./Auth/VerifyOtp"
 import Progress from "./ProfileCreation/User/ProgressBar"
 import YourInfo from "./Auth/YourInfo"
 import Home from "./Home/Home"
-import Profile from "./Profile/Profile"
 import HelpingHand from "./HelpingHands.tsx/HelpingHand"
 import BrideProfileDetails from "./BrideDetails/BrideDetails"
 
@@ -19,7 +18,7 @@ function App() {
           <Route path="/verify-otp" element={<VerifyOtp/>}/>
           <Route path="/your-info" element={<YourInfo/>}/>
           <Route path="/create-profile" element={<Progress/>}/>
-          <Route path="/profile" element={<Profile/>}/>
+          {/* <Route path="/profile" element={<Profile/>}/> */}
           <Route path="/helping-hand" element={<HelpingHand/>}/>
           <Route path="/bride-details" element={<BrideProfileDetails/>}/>
         </Routes>

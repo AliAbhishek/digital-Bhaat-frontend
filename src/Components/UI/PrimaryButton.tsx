@@ -8,7 +8,7 @@ const PrimaryButton = ({
 }: {
   text: string;
   type: any;
-  onClick?: () => void;
+  onClick?: (e?:any) => void;
   isPending?: boolean;
 }) => {
   return (

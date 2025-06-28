@@ -3,7 +3,6 @@ import Heading from "../../Components/UI/Heading";
 import InputBox from "../../Components/UI/InputBox";
 import PrimaryButton from "../../Components/UI/PrimaryButton";
 // import ImageUpload from "../../Components/UI/ImageUpload";
-import { useSelector } from "react-redux";
 import SelectBox from "../../Components/UI/SelctBox";
 import ProfileImageUpload from "../../Components/UI/ProfileImageInput";
 import Address from "./Address";
@@ -123,7 +122,7 @@ const FatherDetail = ({ setCurrentStep, currentStep }: any) => {
         if (!fatherFormDetails.fatherName.trim()) {
             newErrors.fatherName = "Full name is required.";
         } else if (!/^[a-zA-Z\s]+$/.test(fatherFormDetails.fatherName)) {
-            newErrors.brideName = "Name must contain only letters.";
+            newErrors.fatherName = "Name must contain only letters.";
         }
 
 

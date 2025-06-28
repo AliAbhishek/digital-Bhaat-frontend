@@ -38,6 +38,7 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
     // const [isVerifying, setIsVerifying] = useState(false);
 
     const [errors, setErrors] = useState({
+        profileImage:"",
         brideName: "",
         brideDOB: "",
         brideAadharNumber: "",
@@ -98,6 +99,9 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
 
     const validate = () => {
         const newErrors: any = {};
+        if(!girlFormDetails.profileImage){
+            newErrors.profileImage="Please upload a image."
+        }
 
         // Name
         if (!girlFormDetails.brideName?.trim()) {
@@ -292,7 +296,7 @@ const GirlDetail = ({ setCurrentStep, currentStep }: any) => {
                     setGirlFormDetails({ ...girlFormDetails, profileImage: file })
 
                 }}
-            //   error={imageError}
+              error={errors.profileImage}
             />
 
 
