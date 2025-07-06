@@ -8,8 +8,8 @@ import SubHeading from "../../Components/UI/SubHeading";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const DonorProfileCreation = ({edit}:any) => {
-    const navigate=useNavigate()
+const DonorProfileCreation = ({ edit }: any) => {
+    const navigate = useNavigate()
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [formData, setFormData] = useState({
         street: "",
@@ -20,7 +20,7 @@ const DonorProfileCreation = ({edit}:any) => {
         pinCode: "",
         country: "",
         consentGiven: false,
-        isAnonymousDonation:false
+        isAnonymousDonation: false
     });
 
     const [errors, setErrors] = useState({
@@ -40,12 +40,12 @@ const DonorProfileCreation = ({edit}:any) => {
     const validate = () => {
         const newErrors: any = {};
 
-        // if (!formData.city) newErrors.city = "City name is required.";
-        // if (!formData.district) newErrors.district = "District name is required.";
-        // if (!formData.state) newErrors.state = "State name is required.";
-        // if (!formData.pinCode) newErrors.pinCode = "Pin code is required.";
-        // if (!formData.country) newErrors.country = "Country name is required.";
-        // if (!formData.consentGiven) newErrors.consentGiven = "Please accept the term and conditions."
+        if (!formData.city) newErrors.city = "City name is required.";
+        if (!formData.district) newErrors.district = "District name is required.";
+        if (!formData.state) newErrors.state = "State name is required.";
+        if (!formData.pinCode) newErrors.pinCode = "Pin code is required.";
+        if (!formData.country) newErrors.country = "Country name is required.";
+        if (!formData.consentGiven) newErrors.consentGiven = "Please accept the term and conditions."
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -58,21 +58,25 @@ const DonorProfileCreation = ({edit}:any) => {
     const handleSubmit = () => {
         if (validate()) {
             console.log("✅ Valid form submitted:", formData);
-            if(edit){
+            if (edit) {
                 navigate("/")
-            }else{
+            } else {
                 triggerFireworks();
 
             }
         }
     };
 
+    const handleSkip = () => {
+        triggerFireworks()
+    }
+
     useEffect(() => {
         const fetchLocation = async () => {
             try {
                 const res = await axios.get("https://ipapi.co/json/");
                 const country = res?.data?.country_name;
-                setFormData((prev) => ({ ...prev, country :country || "" }));
+                setFormData((prev) => ({ ...prev, country: country || "" }));
             } catch (error) {
                 console.error("Could not fetch location:", error);
             }
@@ -194,7 +198,7 @@ const DonorProfileCreation = ({edit}:any) => {
 
                 </div>
 
-                <div className='!mt-8 flex w-full '>
+                {/* <div className='!mt-8 flex w-full '>
                     <div className='!mt-1'> <Checkbox
                         checked={formData?.consentGiven}
                         isRequired={true}
@@ -210,11 +214,12 @@ const DonorProfileCreation = ({edit}:any) => {
                     </div>
 
 
-                </div>
+                </div> */}
 
                 <div className="pt-4 flex justify-center !mb-10 !mt-3">
-                    <div className="w-[7.5rem]">
+                    <div className="w-[7.5rem] flex gap-2">
                         <PrimaryButton text="Continue" type="button" onClick={handleSubmit} />
+                        <PrimaryButton text="Skip" type="button" onClick={handleSkip} />
                     </div>
                 </div>
             </div>}

@@ -169,7 +169,7 @@ const LandingPage = () => {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="max-w-xl text-center md:text-left"
+            className="max-w-xl text-center md:text-left mt-12"
           >
             <motion.h1
               className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg"

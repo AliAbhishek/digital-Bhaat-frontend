@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Added useLocation import
 import logoImage from "../assets/transparentLogo.png"
 import Heading from "../Components/UI/Heading";
 import Moto from "../Components/UI/Moto";
 import PrimaryButton from "../Components/UI/PrimaryButton";
-// import 'react-phone-input-2/lib/style.css' // This import is not used in this component, so it remains commented out.
+import { useNavigate } from "react-router-dom";
+import 'react-phone-input-2/lib/style.css'
 import InputBox from "../Components/UI/InputBox";
 import ProfileImageUpload from "../Components/UI/ProfileImageInput";
 import { getUserIdFromToken } from "../utils/decodeToken";
@@ -14,13 +14,15 @@ import toast from "react-hot-toast";
 import { useQueryApi } from "../customHooks/useFetchData";
 import Loader from "../Components/UI/Loader";
 
+
+
 const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
 
     const decodedToken: any = getUserIdFromToken();
-    const location = useLocation(); // Initialize useLocation hook
 
     const { isEditMode } = useMemo(() => {
         const params = new URLSearchParams(location.search);
+
         const editParam = params.get("edit") === "true"; // convert to boolean
         return { isEditMode: editParam };
     }, [location.search]);
@@ -29,26 +31,26 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
         name: '',
         email: "",
         profileImage: null
+
     });
+
 
     const navigate = useNavigate()
 
     const { data: userData, isLoading: userIsLoading } = useQueryApi({
+
         key: ["userDetails"],
         url: `${endpoints.GET_USER_PROFILE.endpoint}`,
+
     });
 
     useEffect(() => {
         console.log(userData, "userData")
         if (userData?.status == 200) {
-            setFormData(prev => ({ // Use functional update to avoid stale closure warning if needed
-                ...prev,
-                name: userData?.data?.fullName,
-                email: userData?.data?.email,
-                profileImage: userData?.data?.profileImageUrl
-            }));
+            setFormData({ ...formData, name: userData?.data?.fullName, email: userData?.data?.email, profileImage: userData?.data?.profileImageUrl })
         }
-    }, [userData]); // Removed formData from dependency array as it's not needed for this update pattern
+
+    }, [userData])
 
     const { mutate: updateProfileMutate, isPending: UpdateProfilePending } = useMutationApi({
         url: endpoints.UPDATE_PROFILE.endpoint,
@@ -62,7 +64,10 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
                     let role = decodedToken?.role
                     navigate(`/create-profile?role=${role}`)
                 }
+
             }
+
+
         },
         onError: (error) => {
             const message = error?.response?.data?.message || "Something went wrong.";
@@ -83,77 +88,86 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
         },
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { // Explicitly typed event
+
+
+
+
+    const handleChange = (e: any) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
-    const handleSubmit = (e: React.FormEvent) => { // Explicitly typed event
-        e.preventDefault();
+
+    const handleSubmit = (e: any) => {
+ e.preventDefault();
+        if(!formData.profileImage){
+            return toast.error("Please select your profile image")
+        }
+
+       
         if (edit) {
             setCurrentStep(currentStep + 1)
         } else {
+            // console.log(formData);
             if (isEditMode) {
                 if (typeof formData?.profileImage == "string") {
                     updateProfileMutate({ fullName: formData.name, email: formData.email, profileImage: formData?.profileImage })
                 } else {
                     let formdataToSend = new FormData()
-                    if (formData.profileImage == null) {
-                        toast.error("Please upload a profile image."); // Added toast for user feedback
-                        return;
-                    }
+                    if (formData.profileImage == null) return
                     formdataToSend.append("file", formData.profileImage)
                     mutate(formdataToSend)
                 }
+
             } else {
                 let formdataToSend = new FormData()
-                if (formData.profileImage == null) {
-                    toast.error("Please upload a profile image."); // Added toast for user feedback
-                    return;
-                }
+                if (formData.profileImage == null) return
                 formdataToSend.append("file", formData.profileImage)
                 mutate(formdataToSend)
+
             }
+
         }
+
+
+
     }
 
-    if (userIsLoading) return (<Loader />); // Changed to return statement to correctly render Loader
+    if (userIsLoading) (<Loader />)
 
     return (
-        // Main container: Changed to flex-col on small screens, flex-row on medium screens and up.
-        // Added responsive padding (px, py) and appropriate gap between sections.
-        // Added default background and text colors for consistent styling, assuming they are part of global layout.
-        <div className="flex flex-col md:flex-row justify-center items-center min-h-screen w-full py-8 px-4 md:px-6 lg:px-12 gap-y-12 md:gap-x-20">
-            {/* Left Section: Logo & Moto */}
-            <div className="flex flex-col items-center text-center space-y-6 max-w-sm md:max-w-md lg:max-w-xl mx-auto">
+        <div className="flex justify-center items-center min-h-screen gap-30 w-full">
+            <div className="flex flex-col items-center text-center space-y-6 max-w-xl mx-auto px-4">
                 <div className="relative">
                     <img
                         src={logoImage}
-                        alt="Digital Bhaat Logo"
-                        // Responsive image sizing: scales down for smaller viewports
-                        className="w-full h-auto max-w-[180px] max-h-[140px] sm:max-w-[250px] sm:max-h-[200px] md:max-w-[380px] md:max-h-[300px] object-contain drop-shadow-xl rounded-xl transition-transform duration-300 hover:scale-105"
+                        alt="Logo"
+                        className="max-w-[380px] max-h-[300px] object-contain drop-shadow-xl rounded-xl transition-transform duration-300 hover:scale-105"
                     />
 
                     {/* Glowing peach halo behind logo */}
                     <div className="absolute inset-0 rounded-full blur-2xl opacity-40 bg-[#c98c64] z-[-1] mt-1"></div>
                 </div>
+
                 <Moto />
             </div>
 
-            {/* Right Section: Form */}
-            {/* Form container: Added responsive max-width and padding.
-                The 'box' class's original CSS styles are kept untouched. */}
-            <div className="box w-full max-w-sm sm:max-w-md lg:max-w-lg p-6 sm:p-8 md:p-10">
-                <span className="borderLine"></span> {/* Original borderLine element */}
+
+            <div className="box ">
+                <span className="borderLine"></span>
                 <form onSubmit={handleSubmit}>
+
                     <Heading title="Your Details" />
+
 
                     <ProfileImageUpload
                         image={formData.profileImage}
                         setImage={(file: any) => {
                             setFormData({ ...formData, profileImage: file })
+
                         }}
-                    //   error={imageError} // This was commented out, kept as is.
+                    //   error={imageError}
                     />
+
 
                     <InputBox
                         value={formData.name}
@@ -173,9 +187,11 @@ const YourInfo = ({ setCurrentStep, currentStep, edit }: any) => {
                     />
 
                     <PrimaryButton text="Submit" type="submit" isPending={isPending || UpdateProfilePending} />
+
                 </form>
             </div>
         </div>
+
     );
 };
 

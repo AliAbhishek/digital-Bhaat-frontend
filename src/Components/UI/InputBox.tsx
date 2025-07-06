@@ -1,6 +1,6 @@
 
 
-const InputBox = ({value, handleChange,name,label,type,isRequired,error}:{value:any, handleChange:any,name:any,label:any,type:any,isRequired:boolean,error?:string    }) => {
+const InputBox = ({value, handleChange,name,label,type,isRequired,error}:{value:any, handleChange:any,name:any,label:any,type:any,isRequired?:boolean,error?:string    }) => {
   return (
   <>
     <div className="inputBox relative">

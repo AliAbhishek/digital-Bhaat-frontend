@@ -59,7 +59,12 @@ const VerifyOtp = () => {
             localStorage.setItem("token", data?.data?.token)
             if (data?.status == 200) {
                 if (data?.data?.isProfileCompleted) {
-                    navigate("/")
+                    if (data?.data?.role == "donor") {
+                        navigate("/donor-home")
+                    } else {
+                        navigate("/")
+                    }
+
                 } else {
                     navigate("/your-info")
                 }

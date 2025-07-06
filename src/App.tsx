@@ -6,6 +6,7 @@ import YourInfo from "./Auth/YourInfo"
 import Home from "./Home/Home"
 import HelpingHand from "./HelpingHands.tsx/HelpingHand"
 import BrideProfileDetails from "./BrideDetails/BrideDetails"
+import DonorHome from "./Home/DonorHomePage"
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           {/* <Route path="/profile" element={<Profile/>}/> */}
           <Route path="/helping-hand" element={<HelpingHand/>}/>
           <Route path="/bride-details" element={<BrideProfileDetails/>}/>
+          <Route path="/donor-home" element={<DonorHome/>}/>
         </Routes>
       </Router>
     </div>
