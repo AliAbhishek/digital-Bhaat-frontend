@@ -330,3 +330,13 @@ body {
   transform: translate3d(0%, -30%, 100px);
 }
 
+.donor-card {
+  @apply relative  h-[200px] flex justify-center items-end rounded-xl overflow-hidden;
+}
+
+
+
+
+
+
+

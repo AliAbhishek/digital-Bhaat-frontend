@@ -13,6 +13,7 @@ export const endpoints = {
     GET_BRIDE_PROFILE : { endpoint: "/brideProfile/getBrideProfile" },
     UPDATE_BRIDE_PROFILE: { endpoint: "/brideProfile/updateBrideProfile",method:"put" },
     GET_BRIDE_PROFILES: { endpoint: "/brideProfile/getBrideProfiles" },
-    RATION_CARD_UPLOAD:{ endpoint: "/brideProfile/rationCardUpload", method: "post" }
+    RATION_CARD_UPLOAD:{ endpoint: "/brideProfile/rationCardUpload", method: "post" },
+    GET_VERIFIED_BRIDES:{ endpoint: "/provider/providerHomePage" },
 
 }

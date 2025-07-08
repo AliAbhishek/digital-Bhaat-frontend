@@ -6,6 +6,8 @@ import { endpoints } from "../api/endpoints";
 import Loader from "../Components/UI/Loader";
 import Logo from "../assets/transparentLogo.png";
 import { getUserIdFromToken } from "../utils/decodeToken";
+import PrimaryButton from "../Components/UI/PrimaryButton";
+import ParticlesBackground from "../Components/UI/TsParticle";
 
 // FadeIn animation variants for motion components
 const fadeIn = {
@@ -32,7 +34,7 @@ const InfoItem = ({ label, value }: any) => (
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
     >
         <span className="font-semibold text-[#1a1a1a]">{label}:</span>{" "}
-        {value || <span className="italic text-gray-400">N/A</span>}
+        {value || <span className="italic text-gray-800">N/A</span>}
     </motion.p>
 );
 
@@ -61,7 +63,7 @@ const BadgeItem = ({ label, value }: any) => (
 const Section = ({ title, children, animationVariants = fadeIn }: any) => (
     <section className="px-4 py-8 md:py-10 max-w-5xl mx-auto">
         <motion.div
-            className="bg-white/70 backdrop-blur-md rounded-xl p-6 md:p-8 shadow-lg overflow-hidden" // Added overflow-hidden for better animation
+            className="bg-white backdrop-blur-md rounded-xl p-6 md:p-8 shadow-lg overflow-hidden" // Added overflow-hidden for better animation
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.2 }} // Trigger animation when 20% of section is visible
@@ -122,12 +124,13 @@ interface Profile {
     stepCompleted?: number;
 }
 
-const BrideDetail: React.FC =() => {
-   const decodedToken: any = getUserIdFromToken();
-   let role =decodedToken.role
+const BrideDetail: React.FC = () => {
+    const decodedToken: any = getUserIdFromToken();
+    let role = decodedToken.role
+    console.log(role, "role")
     const query = new URLSearchParams(useLocation().search);
     const encodedId = query.get("id");
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const brideId = encodedId ? atob(encodedId) : null;
     const [profile, setProfile] = useState<Profile | null>(null);
 
@@ -162,8 +165,8 @@ const BrideDetail: React.FC =() => {
     } = profile;
 
     return (
-        <div className="bg-gradient-to-br w-screen min-h-screen font-inter bg-[#000000e6] text-[#fef9f6]">
-            {/* Hero Section */}
+        <div className="bg-gradient-to-br w-screen min-h-screen font-inter bg-black text-[#fef9f6]">
+            <ParticlesBackground />
             <section className="relative h-[60vh] md:h-screen flex flex-col justify-center items-center text-center overflow-hidden p-4">
                 {brideProfileImageUrl && (
                     <motion.img
@@ -173,10 +176,10 @@ const BrideDetail: React.FC =() => {
                         initial={{ scale: 1.1, opacity: 0.1 }} // Initial larger scale and lower opacity for subtle zoom-in
                         animate={{ scale: 1, opacity: 0.2 }}
                         transition={{ duration: 2, ease: "easeOut" }} // Slower, subtle animation
-                        // onError={(e) => {
-                        //     e.currentTarget.src = LogoPlaceholder;
-                        //     e.currentTarget.onerror = null;
-                        // }}
+                    // onError={(e) => {
+                    //     e.currentTarget.src = LogoPlaceholder;
+                    //     e.currentTarget.onerror = null;
+                    // }}
                     />
                 )}
 
@@ -322,43 +325,70 @@ const BrideDetail: React.FC =() => {
             </Section>
 
             {/* Profile Summary Section */}
-            <section className="py-8 md:py-12 text-center bg-[#fef9f6]">
+            <Section className="relative z-30 py-14 px-6 sm:px-10 md:py-20 max-w-5xl  ">
+
+                {/* <ParticlesBackground/> */}
+              
                 <motion.div
-                    className="max-w-2xl mx-auto px-4"
-                    initial="hidden"
-                    whileInView="show"
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
                     viewport={{ once: true }}
-                    variants={fadeIn}
+                    className="relative bg-transparent backdrop-blur-xl rounded-3xl border border-[#c98c64]/30 shadow-[0_10px_30px_rgba(201,140,100,0.3)] px-6 py-10 md:px-10 text-center"
                 >
-                    <h2 className="text-2xl md:text-3xl font-bold text-[#c98c64] mb-4 md:mb-6">
+                    
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#c98c64] text-black px-4 py-1 rounded-full text-sm font-semibold shadow-md">
+                        You're making a girl's dream come true 💫
+                    </div>
+
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-[#c98c64] mb-6 drop-shadow-lg">
                         🌟 Profile Summary
                     </h2>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-left text-[#1a1a1a] font-medium">
                         <BadgeItem label="Profile Status" value={profileStatus || "-"} />
                         <BadgeItem label="Admin Verified" value={isProfileVerifiedByAdmin ? "Yes ✅" : "No ❌"} />
                         <BadgeItem label="Profile Completed" value={isProfileCompleted ? "Yes ✅" : "No ❌"} />
                         <BadgeItem label="Steps Completed" value={`${stepCompleted}/4`} />
                     </div>
 
-                    <div className="mt-6 mb-4 text-[#1a1a1a] text-lg md:text-xl font-medium">
-                        💰 Amount Sanctioned: <span className="text-green-600">₹{amountSanctioned || 0}</span> &nbsp;|
-                        &nbsp; Collected: <span className="text-blue-600">₹{collectedAmount || 0}</span>
+                    <div className="mt-8 text-base sm:text-lg md:text-xl font-semibold text-[#1a1a1a]">
+                        💰 <span className="text-[#8b5c3d]">Amount Sanctioned:</span> <span className="text-green-600">₹{amountSanctioned || 0}</span>
+                        <br />
+                        ❤️ <span className="text-[#8b5c3d]">Collected So Far:</span> <span className="text-blue-600">₹{collectedAmount || 0}</span>
                     </div>
 
-                    {
-                        role=="donor" && <motion.button
-                        className="mt-4 bg-gradient-to-r from-[#8b5c3d] to-[#c98c64] hover:brightness-110 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-full shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105"
-                        whileHover={{ scale: 1.07, boxShadow: "0px 10px 20px rgba(0,0,0,0.3)" }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        🏱 Start Donation
-                    </motion.button>
-                    }
+                    <div className="mt-6">
+                        <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
+                            <div
+                                className="h-full rounded-full bg-gradient-to-r from-[#c98c64] to-[#8b5c3d]"
+                                style={{ width: `${Math.min((collectedAmount! / (amountSanctioned || 1)) * 100, 100)}%` }}
+                            />
+                        </div>
+                        <p className="text-sm mt-2 text-gray-500">
+                            {collectedAmount! < amountSanctioned!
+                                ? `₹${amountSanctioned! - collectedAmount!} still needed to fully fund her wedding 💍`
+                                : "Fully Funded 🎉"}
+                        </p>
+                    </div>
 
-                    
+                    {role === "donor" && (
+                        <PrimaryButton
+                            text="💝 Donate Now"
+                            type="button"
+                            onClick={() => { }}
+                            // className="mt-6 bg-[#c98c64] text-[#1a1a1a] hover:bg-[#8b5c3d]"
+                        />
+                    )}
+
+                    {/* Emotional Quote */}
+        <div className="mt-8 text-sm italic text-gray-600">
+          "Your kindness today helps a daughter walk into her new life with dignity tomorrow."
+        </div>
                 </motion.div>
-            </section>
+            </Section>
+
+
         </div>
     );
 };
