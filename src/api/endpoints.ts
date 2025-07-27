@@ -15,5 +15,8 @@ export const endpoints = {
     GET_BRIDE_PROFILES: { endpoint: "/brideProfile/getBrideProfiles" },
     RATION_CARD_UPLOAD:{ endpoint: "/brideProfile/rationCardUpload", method: "post" },
     GET_VERIFIED_BRIDES:{ endpoint: "/provider/providerHomePage" },
+    GET_GAMES:{endpoint:"/games/getGamesList"},
+    ADD_GAME_FAV:{ endpoint: "/games/addToFav", method: "post" },
+    GET_FAV_GAMES:{endpoint:"/games/getFavGames"},
 
 }
