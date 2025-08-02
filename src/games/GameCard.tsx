@@ -5,14 +5,14 @@ import Loader from "../Components/UI/Loader";
 import { useQueryApi } from "../customHooks/useFetchData";
 
 
-const GameCard = ({ game, idx, setActiveGame }: any) => {
+const GameCard = ({ game, idx, setActiveGame,setGameId }: any) => {
 
     const { data, refetch } = useQueryApi({
         key: ["favGames"], // Include searchTerm in cache key
         url: `${endpoints.GET_FAV_GAMES.endpoint}`,
     });
 
-    console.log(data, "ddddd")
+   
 
     const { mutate, isPending } = useMutationApi({
         url: endpoints.ADD_GAME_FAV.endpoint,
@@ -65,7 +65,10 @@ const GameCard = ({ game, idx, setActiveGame }: any) => {
             <div className="p-5 flex flex-col items-center justify-center gap-2">
                 <h3 className="text-xl font-bold text-[#fef9f6] text-center">{game.title}</h3>
                 <button
-                    onClick={() => setActiveGame(game.url)}
+                    onClick={() => 
+                        {setActiveGame(game.url) 
+                        setGameId(game?.gameId)}
+                    }
                     className="mt-2 bg-[#c98c64] text-black px-5 py-2 rounded-xl font-semibold hover:bg-[#8b5c3d] hover:text-white transition-all shadow-md hover:shadow-[0_0_10px_#c98c64aa]"
                 >
                     🎁 Play & Donate ₹1

@@ -334,6 +334,42 @@ body {
   @apply relative  h-[200px] flex justify-center items-end rounded-xl overflow-hidden;
 }
 
+@keyframes confetti {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 1000px 1000px;
+  }
+}
+
+.animate-confetti {
+  background-image: url("https://cdn.jsdelivr.net/gh/stevenlei/confetti-background/confetti.gif");
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  animation: confetti 10s linear infinite;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.6s ease-out;
+}
+
+
 
 
 

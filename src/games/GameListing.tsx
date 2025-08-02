@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import ParticlesBackground from "../Components/UI/TsParticle";
-import toast from "react-hot-toast";
 import { useQueryApi } from "../customHooks/useFetchData";
 import { endpoints } from "../api/endpoints";
 import Loader from "../Components/UI/Loader";
 import { useDebounce } from "../customHooks/useDebounce";
 import GameCard from "./GameCard";
+import GameContainer from "./GameLogic";
 // import { makePostRequest } from "../utils/api";
 
 export default function GameList() {
   const [activeGame, setActiveGame] = useState<string | null>(null);
+  const [gameId,setGameId] = useState<string | null>(null)
   const [selectedBrideId, setSelectedBrideId] = useState<string | null>(null);
   const [showDonationMsg, setShowDonationMsg] = useState(false);
   const [gameList, setGameList] = useState<any[]>([]);
@@ -39,35 +40,7 @@ export default function GameList() {
     goFullscreen();
   }, [activeGame]);
 
-  // Handle postMessage from iframe when game is complete
-  useEffect(() => {
-    const handleGameMsg = async (event: MessageEvent) => {
-      console.log(event,"event")
-      // if (event.data?.type === "GAME_COMPLETED") {
-      //   try {
-      //     const gameScore = event.data.data?.score;
-
-      //     // const res = await makePostRequest(endpoints.ADD_GAME_DONATION.endpoint, {
-      //     //   brideId: selectedBrideId,
-      //     //   gameUrl: activeGame,
-      //     //   score: gameScore,
-      //     // });
-
-      //     // if (res.success) {
-      //     //   setShowDonationMsg(true);
-      //       toast.success("🎉 ₹1 donated to bride's wallet!");
-      //     // } else {
-      //     //   toast.error(res.message || "Donation failed.");
-      //     // }
-      //   } catch (err: any) {
-      //     toast.error("Server error during donation");
-      //   }
-      // }
-    };
-
-    window.addEventListener("message", handleGameMsg);
-    return () => window.removeEventListener("message", handleGameMsg);
-  }, [activeGame, selectedBrideId]);
+ 
 
   const handleBack = () => {
     setActiveGame(null);
@@ -111,9 +84,13 @@ export default function GameList() {
                 key={game._id}
                 game={game}
                 idx={idx}
+                setGameId={setGameId}
                 setActiveGame={(url: string) => {
                   setActiveGame(url);
-                  setSelectedBrideId(game?.brideId); // Ensure brideId exists
+                  
+                  // setSelectedBrideId(game?.brideId); // Ensure brideId exists
+                  
+
                 }}
               />
             ))}
@@ -121,23 +98,24 @@ export default function GameList() {
         </div>
       ) : (
         <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50 px-4">
-          <div className="absolute top-5 left-5">
-            <button
-              onClick={handleBack}
-              className="bg-[#c98c64] text-black px-4 py-2 rounded-lg font-bold shadow hover:bg-[#8b5c3d] hover:text-white transition"
-            >
-              ← Back to Games
-            </button>
-          </div>
+          <div className="absolute top-5 left-5 z-[100]">
+    <button
+      onClick={handleBack}
+      className="bg-[#c98c64] text-black px-4 py-2 rounded-lg font-bold shadow hover:bg-[#8b5c3d] hover:text-white transition"
+    >
+      ← Back to Games
+    </button>
+  </div>
 
           <div className="w-full h-[90vh] border-4 border-[#c98c64] rounded-2xl overflow-hidden shadow-xl shadow-[#c98c64aa]">
-            <iframe
+            {/* <iframe
               ref={iframeRef}
               src={activeGame}
               allowFullScreen
               className="w-full h-full rounded-xl"
               title="Game Frame"
-            />
+            /> */}
+            <GameContainer iframeRef={iframeRef} activeGame={activeGame} gameId={gameId} onBack={handleBack}/>
           </div>
 
           {showDonationMsg && (
