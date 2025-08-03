@@ -18,5 +18,6 @@ export const endpoints = {
     GET_GAMES:{endpoint:"/games/getGamesList"},
     ADD_GAME_FAV:{ endpoint: "/games/addToFav", method: "post" },
     GET_FAV_GAMES:{endpoint:"/games/getFavGames"},
+    GAMIFICATION_DONATION:{ endpoint: "/donation/donateViaPlaying", method: "post" },
 
 }

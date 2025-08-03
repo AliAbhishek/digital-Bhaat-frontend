@@ -71,7 +71,7 @@ export default function DonorHome() {
         setBrides(data?.data?.data)
     }, [data])
 
-    console.log(data, "dd")
+    // console.log(data, "dd")
 
     return (
         <>
@@ -145,7 +145,7 @@ export default function DonorHome() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 py-10 px-6">
                     {brides?.length > 0 ? (
-                        brides?.map((bride:any, index) => {
+                        brides?.map((bride: any, index) => {
                             const {
                                 brideDetails,
                                 amountSanctioned,
@@ -171,7 +171,11 @@ export default function DonorHome() {
                                     brideProfileImageUrl={bride?.brideProfileImageUrl}
                                     guardianImageUrl={bride?.guardianImageUrl}
                                     urgency={urgency} // update dynamically if available
-                                    onDonate={() => alert(`Donating to ${bride?.brideDetails?.brideName}`)}
+                                    onDonate={(e: any) => {
+                                        e.stopPropagation()
+                                        alert(`Donating to ${bride?.brideDetails?.brideName}`)
+                                    }
+                                    }
                                     index={index}
                                 />
 

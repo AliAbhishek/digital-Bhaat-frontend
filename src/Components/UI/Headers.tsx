@@ -4,9 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/transparentLogo.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchBar from './Searchbar';
+import { getUserIdFromToken } from '../../utils/decodeToken';
 
 const Header = () => {
     const token: any = localStorage.getItem("token")
+    const decodedToken: any = getUserIdFromToken();
+    let role: string = decodedToken.role
     const [menuOpen, setMenuOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -28,11 +31,11 @@ const Header = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleLogOut =() => {
+    const handleLogOut = () => {
         console.log("logout")
-            localStorage.clear()
-            navigate("/")
-        }
+        localStorage.clear()
+        navigate("/")
+    }
 
 
     return (
@@ -106,7 +109,14 @@ const Header = () => {
                                     </button>
                                     <button
                                         className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
-                                        onClick={() => handleNav('/helping-hand')}
+                                        onClick={() => {
+                                            if (role == "donor") {
+                                                handleNav('/donor-home')
+                                            } else {
+                                                handleNav('/helping-hand')
+                                            }
+
+                                        }}
                                     >
                                         🤝
                                         Helping Hand

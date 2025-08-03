@@ -8,6 +8,9 @@ import HelpingHand from "./HelpingHands.tsx/HelpingHand"
 import BrideProfileDetails from "./BrideDetails/BrideDetails"
 import DonorHome from "./Home/DonorHomePage"
 import GameList from "./games/GameListing"
+import Settings from "./settings"
+
+
 
 function App() {
   return (
@@ -25,6 +28,7 @@ function App() {
           <Route path="/bride-details" element={<BrideProfileDetails/>}/>
           <Route path="/donor-home" element={<DonorHome/>}/>
           <Route path="/games" element={<GameList/>}/>
+          <Route path="/settings" element={<Settings/>}/>
         </Routes>
       </Router>
     </div>

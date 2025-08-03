@@ -1,18 +1,43 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useMutationApi } from "../customHooks/useMutationApi";
+import { endpoints } from "../api/endpoints";
+import toast from "react-hot-toast";
 
 type Props = {
   iframeRef: React.RefObject<HTMLIFrameElement>;
   activeGame: string;
   onBack: () => void;
+  selectedBrideId: any;
+  gameId: any
 };
 
-export default function GameContainer({ iframeRef, activeGame, onBack }: Props) {
+export default function GameContainer({ iframeRef, activeGame, onBack, selectedBrideId, gameId }: Props) {
   const [hasStarted, setHasStarted] = useState(false);
+  const [orgData, setOrgData] = useState<any>(null)
   const [showPopup, setShowPopup] = useState(false);
-  const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const gameTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const inactivityTimeoutRef = useRef<any>(null);
+  const gameTimerRef = useRef<any>(null);
   const secondsPlayedRef = useRef(0);
   const isPopupShownRef = useRef(false); // to prevent showing multiple times
+
+  const { mutate } = useMutationApi({
+    url: endpoints.GAMIFICATION_DONATION.endpoint,
+    method: endpoints.GAMIFICATION_DONATION.method,
+    onSuccess: (data) => {
+
+      console.log(data, "dddddddddd")
+      if (data?.success) {
+        setOrgData(data?.data?.data?.adsOrganisation || data?.data?.data?.csrOrganisation)
+        setShowPopup(true);
+
+      }
+
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Something went wrong.";
+      toast.error(message);
+    },
+  });
 
   const handleStart = () => {
     setHasStarted(true);
@@ -21,7 +46,8 @@ export default function GameContainer({ iframeRef, activeGame, onBack }: Props) 
     // Show popup after 90 seconds
     setTimeout(() => {
       if (!isPopupShownRef.current) {
-        setShowPopup(true);
+        // setShowPopup(true);
+        mutate({ brideId: selectedBrideId, gameId })
         isPopupShownRef.current = true;
         console.log("[Popup] Showing congratulation popup");
 
@@ -37,42 +63,35 @@ export default function GameContainer({ iframeRef, activeGame, onBack }: Props) 
       console.log(`[Game Time] ${secondsPlayedRef.current}s`);
     }, 1000);
 
-    // setupInactivityTracking();
+    setupInactivityTracking();
   };
 
-  // const setupInactivityTracking = () => {
-  //   const resetInactivityTimer = () => {
-  //     if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
-  //     inactivityTimeoutRef.current = setTimeout(() => {
-  //       console.log("[Inactivity] 40s of no interaction → onBack()");
-  //       onBack();
-  //     }, 40000);
-  //   };
+  const setupInactivityTracking = () => {
+    // Tab switch = immediate callback
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        console.log("[Tab Switch] Tab hidden → onBack()");
+        onBack();
+      }
+    });
+  };
 
-  //   const events = ["mousemove", "click", "keydown", "touchstart"];
-  //   events.forEach(event => window.addEventListener(event, resetInactivityTimer));
-  //   resetInactivityTimer();
 
-  //   // Tab switch handler
-  //   document.addEventListener("visibilitychange", () => {
-  //     if (document.hidden) {
-  //       console.log("[Tab Switch] Tab hidden → onBack()");
-  //       onBack();
-  //     }
-  //   });
-  // };
 
   useEffect(() => {
     return () => {
-      if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
+      if (inactivityTimeoutRef.current) clearInterval(inactivityTimeoutRef.current);
       if (gameTimerRef.current) clearInterval(gameTimerRef.current);
     };
   }, []);
+
 
   const handlePopupAcknowledge = () => {
     setShowPopup(false);
     console.log("[Popup] User acknowledged donation popup. Timers stopped. Game continues freely.");
   };
+
+  console.log(orgData, "orgData")
 
   return (
     <div className="relative w-full h-full">
@@ -105,19 +124,43 @@ export default function GameContainer({ iframeRef, activeGame, onBack }: Props) 
           {/* Popup Box */}
           <div className="bg-[#fff7f2] border-4 border-[#c98c64] p-8 rounded-3xl shadow-2xl text-center max-w-sm w-full z-10 animate-bounce-in">
             <div className="text-4xl mb-3">🎉</div>
+
             <h2 className="text-2xl font-extrabold text-[#c98c64] mb-2 drop-shadow-sm">
               ₹1 Donated!
             </h2>
-            <p className="text-[#1e1e1e] font-medium mb-6">
-              A warm thank you from <strong>XYZ Foundation</strong> ❤️
+
+            <p className="text-[#1e1e1e] font-medium mb-6 text-center leading-relaxed">
+              ❤️ A heartfelt thank you to
+              <br /><strong>{orgData?.name}</strong><br />
+              for making this possible.<br /><br />
+              Your game wasn’t just fun — it brought a bride closer to her dream.
+              <br />Every moment you played made a difference.
             </p>
-            <button
-              onClick={handlePopupAcknowledge}
-              className="px-6 py-2 bg-[#c98c64] text-white font-semibold rounded-full shadow hover:bg-[#8b5c3d] transition hover:scale-105"
-            >
-              Got it! 🙌
-            </button>
+
+            {orgData?.website && (
+              <div className="mb-4">
+                <a
+                  href={orgData.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-[#c98c64] underline hover:text-[#8b5c3d] transition"
+                >
+                  Visit {orgData.name}'s website
+                </a>
+              </div>
+            )}
+
+            <div>
+              <button
+                onClick={handlePopupAcknowledge}
+                className="px-6 py-2 bg-[#c98c64] text-white font-semibold rounded-full shadow hover:bg-[#8b5c3d] transition hover:scale-105"
+              >
+                Got it! 🙌
+              </button>
+            </div>
+
           </div>
+
         </div>
       )}
 

@@ -2,15 +2,12 @@ import toast from "react-hot-toast";
 import { endpoints } from "../api/endpoints";
 import { useMutationApi } from "../customHooks/useMutationApi";
 import Loader from "../Components/UI/Loader";
-import { useQueryApi } from "../customHooks/useFetchData";
+// import { useQueryApi } from "../customHooks/useFetchData";
 
 
-const GameCard = ({ game, idx, setActiveGame,setGameId }: any) => {
+const GameCard = ({ game, idx, setActiveGame,setGameId, favoriteGames,refetch }: any) => {
 
-    const { data, refetch } = useQueryApi({
-        key: ["favGames"], // Include searchTerm in cache key
-        url: `${endpoints.GET_FAV_GAMES.endpoint}`,
-    });
+   
 
    
 
@@ -32,7 +29,7 @@ const GameCard = ({ game, idx, setActiveGame,setGameId }: any) => {
     });
 
     if (isPending) return <Loader />
-    const isFav = data?.data?.some((fav: any) => fav.gameId === game._id);
+    const isFav = favoriteGames?.data?.some((fav: any) => fav.gameId?._id === game._id);
 
 
     return (
@@ -67,7 +64,7 @@ const GameCard = ({ game, idx, setActiveGame,setGameId }: any) => {
                 <button
                     onClick={() => 
                         {setActiveGame(game.url) 
-                        setGameId(game?.gameId)}
+                        setGameId(game?._id)}
                     }
                     className="mt-2 bg-[#c98c64] text-black px-5 py-2 rounded-xl font-semibold hover:bg-[#8b5c3d] hover:text-white transition-all shadow-md hover:shadow-[0_0_10px_#c98c64aa]"
                 >

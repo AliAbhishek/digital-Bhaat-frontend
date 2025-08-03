@@ -1,7 +1,6 @@
 // components/BrideCard.jsx
 
 import { motion } from "framer-motion";
-import moment from "moment";
 import { Calendar, HeartHandshake } from "lucide-react";
 import AnimatedCard from "./DonorAnimatedCards";
 import { DateFormat } from "../utils/DateFormat";
@@ -30,7 +29,7 @@ const BrideCard = ({
 
   // const weddingDateFormatted = moment(brideDetails?.weddingDate).format("Do MMM, YYYY");
   const weddingDateFormatted = DateFormat(brideDetails?.weddingDate)
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
   return (
     <motion.div
@@ -40,9 +39,10 @@ const BrideCard = ({
       transition={{ delay: index * 0.1 }}
       whileHover={{ scale: 1.03 }}
       className="rounded-2xl overflow-hidden relative shadow-xl bg-[#c98c64]/10 border border-[#c98c64]/30 backdrop-blur-md cursor-pointer"
-      onClick={()=>{
+      onClick={() => {
         const encodedId = btoa(_id);
-        navigate(`/bride-details?id=${encodedId}`)}}
+        navigate(`/bride-details?id=${encodedId}`)
+      }}
     >
       {/* Image Section */}
       {/* <div className="relative h-52 w-full bg-black">
@@ -130,7 +130,7 @@ const BrideCard = ({
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-between">
+        <div className="mt-4 flex items-center justify-between gap-4">
           <motion.button
             onClick={onDonate}
             className="bg-[#c98c64] hover:bg-[#8b5c3d] text-[#1a1a1a] px-4 py-2 rounded-full font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition duration-300"
@@ -138,7 +138,21 @@ const BrideCard = ({
           >
             <HeartHandshake className="w-4 h-4" /> Donate
           </motion.button>
+
+          <motion.button
+            onClick={(e) => {
+              e.stopPropagation()
+              const encodedId = btoa(_id);
+            // navigate(`/verify-otp?id=${encodedId}`);
+              navigate(`/games?id=${encodedId}`)
+            }} // <-- define this in your props or locally
+            className="bg-[#c98c64] hover:bg-[#8b5c3d] text-[#1a1a1a] px-4 py-2 rounded-full font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition duration-300"
+            whileHover={{ scale: 1.05 }}
+          >
+            🎮 Play
+          </motion.button>
         </div>
+
       </div>
     </motion.div>
   );

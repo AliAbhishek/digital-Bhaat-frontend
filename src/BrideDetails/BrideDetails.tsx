@@ -373,13 +373,22 @@ const BrideDetail: React.FC = () => {
                     </div>
 
                     {role === "donor" && (
-                        <PrimaryButton
-                            text="💝 Donate Now"
-                            type="button"
-                            onClick={() => { }}
-                            // className="mt-6 bg-[#c98c64] text-[#1a1a1a] hover:bg-[#8b5c3d]"
-                        />
-                    )}
+  <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
+    <PrimaryButton
+      text="💝 Donate Now"
+      type="button"
+      onClick={() => { }}
+      className="px-6 py-3 text-lg font-semibold bg-gradient-to-r from-[#f7c59f] to-[#c98c64] text-[#1a1a1a] rounded-xl shadow-lg hover:from-[#c98c64] hover:to-[#8b5c3d] transition-all duration-300 hover:scale-105"
+    />
+    <PrimaryButton
+      text="🎮 Play Game"
+      type="button"
+      onClick={() => navigate("/games")}
+      className="px-6 py-3 text-lg font-semibold bg-gradient-to-r from-[#c98c64] to-[#f7c59f] text-[#1a1a1a] rounded-xl shadow-lg hover:from-[#8b5c3d] hover:to-[#c98c64] transition-all duration-300 hover:scale-105"
+    />
+  </div>
+)}
+
 
                     {/* Emotional Quote */}
         <div className="mt-8 text-sm italic text-gray-600">
