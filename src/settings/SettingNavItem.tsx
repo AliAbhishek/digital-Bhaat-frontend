@@ -1,23 +1,20 @@
-// SettingNavItem.tsx
-import React from "react";
-// import { cn } from "@/lib/utils"; // utility for class merging
-
-interface SettingNavItemProps {
+type SettingNavItemProps = {
   label: string;
-  active: boolean;
+  active?: boolean;
   onClick: () => void;
-}
+};
 
-export const SettingNavItem: React.FC<SettingNavItemProps> = ({ label, active, onClick }) => {
+export function SettingNavItem({ label, active, onClick }: SettingNavItemProps) {
   return (
     <button
       onClick={onClick}
-      className={
-        `text-left w-full px-4 py-2 rounded-lg font-medium transition,
-        ${active} ? "bg-[#c98c64] text-white shadow" : "text-[#c98c64] hover:bg-[#fceee7]`
-      }
+      className={`w-full text-left px-4 py-3 rounded-xl font-semibold transition ${
+        active
+          ? "bg-[#c98c64] text-[#1e1e1e] shadow-md"
+          : "text-[#c98c64] hover:bg-[#2d2d2d] hover:text-white"
+      }`}
     >
       {label}
     </button>
   );
-};
+}

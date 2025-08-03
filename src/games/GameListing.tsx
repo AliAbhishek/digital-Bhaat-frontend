@@ -87,7 +87,7 @@ const [selectedBrideId,setSelectedBrideId] = useState<any>(null)
           <div className="text-center ">
             <div className="relative text-center ">
               {/* Heart Icon at Top-Right */}
-              <div title="Favorite Games" className="fixed top-12 right-6 z-50 cursor-pointer" onClick={() => setViewFavorites(!viewFavorites)}>
+              <div title="Favorite Games" className="fixed top-22 right-6 z-50 cursor-pointer" onClick={() => setViewFavorites(!viewFavorites)}>
                 <Heart fill="red" className="w-8 h-8 drop-shadow-[0_0_15px_rgba(201,140,100,0.7)]" />
               </div>
 

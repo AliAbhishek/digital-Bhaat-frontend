@@ -5,11 +5,12 @@ import Logo from '../../assets/transparentLogo.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchBar from './Searchbar';
 import { getUserIdFromToken } from '../../utils/decodeToken';
+import Moto from './Moto';
 
 const Header = () => {
     const token: any = localStorage.getItem("token")
     const decodedToken: any = getUserIdFromToken();
-    let role: string = decodedToken.role
+    let role: string = decodedToken?.role
     const [menuOpen, setMenuOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -54,22 +55,29 @@ const Header = () => {
                 </div>
 
                 {/* Search Bar */}
-                <SearchBar />
+                {/* <SearchBar /> */}
+                {/* <Moto/> */}
+
+                <div className="text-center mt-2 hidden md:block">
+                    <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-[#c98c64] typing-text max-w-full">
+                        Beti Bachao, Beti Padhao, Beti ki Shaadi mein Saath Nibhao
+                    </h1>
+                </div>
 
                 {/* Desktop Nav */}
                 <div className="hidden md:flex items-center space-x-6 ml-4">
-                    <button
+                    {/* <button
                         className="text-[#fef9f6] text-sm hover:text-[#c98c64] transition"
                         onClick={() => handleNav('/about')}
                     >
                         About Us
-                    </button>
-                    <button
+                    </button> */}
+                    {/* <button
                         className="text-[#fef9f6] text-sm hover:text-[#c98c64] transition"
                         onClick={() => handleNav('/impact')}
                     >
                         Our Impact
-                    </button>
+                    </button> */}
                     {
                         !token && <button
                             className="py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
@@ -180,7 +188,7 @@ const Header = () => {
                         exit={{ opacity: 0, y: -10 }}
                         className="md:hidden mt-4 px-4 pb-4 text-center space-y-3"
                     >
-                        <button
+                        {/* <button
                             className="block w-full text-[#fef9f6] text-sm py-2 hover:text-[#c98c64]"
                             onClick={() => handleNav('/about')}
                         >
@@ -191,7 +199,7 @@ const Header = () => {
                             onClick={() => handleNav('/impact')}
                         >
                             Our Impact
-                        </button>
+                        </button> */}
                         <button
                             className="block w-full py-2 px-4 bg-[#c98c64] text-white rounded-full text-sm font-semibold shadow hover:bg-[#ad7a52] transition"
                             onClick={() => handleNav('/donate')}

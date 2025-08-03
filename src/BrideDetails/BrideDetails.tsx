@@ -29,12 +29,12 @@ const slideInRight = {
 // InfoItem functional component with hover animation
 const InfoItem = ({ label, value }: any) => (
     <motion.p
-        className="mb-1 text-[#1a1a1a] hover:bg-gray-100 px-2 rounded-md transition-colors duration-200 cursor-default"
+        className="mb-1 px-2 py-1 rounded-md transition-colors duration-200 cursor-default bg-transparent hover:bg-[#ffffff0d]"
         whileHover={{ scale: 1.02 }}
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
     >
-        <span className="font-semibold text-[#1a1a1a]">{label}:</span>{" "}
-        {value || <span className="italic text-gray-800">N/A</span>}
+        <span className="font-semibold text-[#c98c64]">{label}:</span>{" "}
+        <span className="text-white">{value || <span className="italic text-gray-400">N/A</span>}</span>
     </motion.p>
 );
 
@@ -61,9 +61,9 @@ const BadgeItem = ({ label, value }: any) => (
 
 // Section functional component with unique entrance animation
 const Section = ({ title, children, animationVariants = fadeIn }: any) => (
-    <section className="px-4 py-8 md:py-10 max-w-5xl mx-auto">
+    <section className="px-4 py-8 md:py-10 max-w-5xl mx-auto ">
         <motion.div
-            className="bg-white backdrop-blur-md rounded-xl p-6 md:p-8 shadow-lg overflow-hidden" // Added overflow-hidden for better animation
+            className="!bg-[000000e6] backdrop-blur-md rounded-xl p-6 md:p-8 shadow-lg overflow-hidden" // Added overflow-hidden for better animation
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.2 }} // Trigger animation when 20% of section is visible
@@ -122,6 +122,7 @@ interface Profile {
     isProfileCompleted?: boolean;
     isProfileVerifiedByAdmin?: boolean;
     stepCompleted?: number;
+    brideWallet?: number | string
 }
 
 const BrideDetail: React.FC = () => {
@@ -161,7 +162,7 @@ const BrideDetail: React.FC = () => {
         collectedAmount,
         isProfileCompleted,
         isProfileVerifiedByAdmin,
-        stepCompleted,
+        brideWallet,
     } = profile;
 
     return (
@@ -328,7 +329,7 @@ const BrideDetail: React.FC = () => {
             <Section className="relative z-30 py-14 px-6 sm:px-10 md:py-20 max-w-5xl  ">
 
                 {/* <ParticlesBackground/> */}
-              
+
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -336,7 +337,7 @@ const BrideDetail: React.FC = () => {
                     viewport={{ once: true }}
                     className="relative bg-transparent backdrop-blur-xl rounded-3xl border border-[#c98c64]/30 shadow-[0_10px_30px_rgba(201,140,100,0.3)] px-6 py-10 md:px-10 text-center"
                 >
-                    
+
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#c98c64] text-black px-4 py-1 rounded-full text-sm font-semibold shadow-md">
                         You're making a girl's dream come true 💫
                     </div>
@@ -349,7 +350,7 @@ const BrideDetail: React.FC = () => {
                         <BadgeItem label="Profile Status" value={profileStatus || "-"} />
                         <BadgeItem label="Admin Verified" value={isProfileVerifiedByAdmin ? "Yes ✅" : "No ❌"} />
                         <BadgeItem label="Profile Completed" value={isProfileCompleted ? "Yes ✅" : "No ❌"} />
-                        <BadgeItem label="Steps Completed" value={`${stepCompleted}/4`} />
+                        <BadgeItem label="Wallet Balance" value={brideWallet} />
                     </div>
 
                     <div className="mt-8 text-base sm:text-lg md:text-xl font-semibold text-[#1a1a1a]">
@@ -372,28 +373,47 @@ const BrideDetail: React.FC = () => {
                         </p>
                     </div>
 
-                    {role === "donor" && (
-  <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
-    <PrimaryButton
-      text="💝 Donate Now"
-      type="button"
-      onClick={() => { }}
-      className="px-6 py-3 text-lg font-semibold bg-gradient-to-r from-[#f7c59f] to-[#c98c64] text-[#1a1a1a] rounded-xl shadow-lg hover:from-[#c98c64] hover:to-[#8b5c3d] transition-all duration-300 hover:scale-105"
-    />
-    <PrimaryButton
-      text="🎮 Play Game"
-      type="button"
-      onClick={() => navigate("/games")}
-      className="px-6 py-3 text-lg font-semibold bg-gradient-to-r from-[#c98c64] to-[#f7c59f] text-[#1a1a1a] rounded-xl shadow-lg hover:from-[#8b5c3d] hover:to-[#c98c64] transition-all duration-300 hover:scale-105"
-    />
-  </div>
-)}
+                    <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
+                        {role === "donor" && (
+                            <>
+                                <PrimaryButton
+                                    text="💝 Donate Now"
+                                    type="button"
+                                    onClick={() => { }}
+                                    className="px-6 py-3 text-lg font-semibold bg-gradient-to-r from-[#f7c59f] to-[#c98c64] text-[#1a1a1a] rounded-xl shadow-lg hover:from-[#c98c64] hover:to-[#8b5c3d] transition-all duration-300 hover:scale-105"
+                                />
+                                <PrimaryButton
+                                    text="🎮 Play Game"
+                                    type="button"
+                                    onClick={() => navigate("/games")}
+                                    className="px-6 py-3 text-lg font-semibold bg-gradient-to-r from-[#c98c64] to-[#f7c59f] text-[#1a1a1a] rounded-xl shadow-lg hover:from-[#8b5c3d] hover:to-[#c98c64] transition-all duration-300 hover:scale-105"
+                                />
+                            </>
+                        )}
+
+                        {role === "user" && (
+                            <>
+                                <PrimaryButton
+                                    text="👛 View Wallet"
+                                    type="button"
+                                    onClick={() => navigate(`/bride-transactions/${encodedId}`)}
+                                    className="px-6 py-3 text-lg font-semibold bg-gradient-to-r from-[#c98c64] to-[#f7c59f] text-[#1a1a1a] rounded-xl shadow-lg hover:from-[#8b5c3d] hover:to-[#c98c64] transition-all duration-300 hover:scale-105"
+                                />
+                                <PrimaryButton
+                                    text="📜 My Transactions"
+                                    type="button"
+                                    onClick={() => navigate(`/bride-transactions/${encodedId}`)}
+                                    className="px-6 py-3 text-lg font-semibold bg-gradient-to-r from-[#f7c59f] to-[#c98c64] text-[#1a1a1a] rounded-xl shadow-lg hover:from-[#c98c64] hover:to-[#8b5c3d] transition-all duration-300 hover:scale-105"
+                                />
+                            </>
+                        )}
+                    </div>
 
 
                     {/* Emotional Quote */}
-        <div className="mt-8 text-sm italic text-gray-600">
-          "Your kindness today helps a daughter walk into her new life with dignity tomorrow."
-        </div>
+                    <div className="mt-8 text-sm italic text-gray-600">
+                        "Your kindness today helps a daughter walk into her new life with dignity tomorrow."
+                    </div>
                 </motion.div>
             </Section>
 
