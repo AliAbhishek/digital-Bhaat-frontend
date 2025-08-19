@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import Heading from '../../Components/UI/Heading'
 import ImageUpload from '../../Components/UI/ImageUpload';
 import PrimaryButton from '../../Components/UI/PrimaryButton';
-import FinalSuccessMessage from '../../utils/FinalSuccessMessage';
 import SubHeading from '../../Components/UI/SubHeading';
 import Checkbox from '../../Components/UI/CheckBox';
 // import { useNavigate } from 'react-router-dom';
@@ -11,7 +10,8 @@ import { useMutationApi } from '../../customHooks/useMutationApi';
 import { endpoints } from '../../api/endpoints';
 import toast from 'react-hot-toast';
 import { useQueryApi } from '../../customHooks/useFetchData';
-import { Loader } from 'lucide-react';
+import Loader from '../../Components/UI/Loader';
+
 
 const Documents = ({ setCurrentStep, currentStep }: any) => {
 

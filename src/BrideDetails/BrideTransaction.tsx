@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom"
 import { useQueryApi } from "../customHooks/useFetchData";
 import { endpoints } from "../api/endpoints";
-import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import ParticlesBackground from "../Components/UI/TsParticle";
+import Loader from "../Components/UI/Loader";
 
 
 const BrideTransaction = () => {
@@ -81,6 +81,29 @@ const BrideTransaction = () => {
                                                             —{" "}
                                                             <a
                                                                 href={txn.adsOrganisationId.website}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-[#c98c64] underline hover:text-[#e1a880] transition"
+                                                            >
+                                                                Visit Site
+                                                            </a>
+                                                        </>
+                                                    )}
+                                                </p>
+                                            )}
+
+                                             {txn.type === "csr" && txn.csrOrganisationId?.name && (
+                                                <p className="text-sm text-gray-300 mt-1">
+                                                    💼 Powered by:{" "}
+                                                    <span className="font-medium text-white">
+                                                        {txn.csrOrganisationId.name}
+                                                    </span>
+                                                    {txn.csrOrganisationId.website && (
+                                                        <>
+                                                            {" "}
+                                                            —{" "}
+                                                            <a
+                                                                href={txn.csrOrganisationId.website}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="text-[#c98c64] underline hover:text-[#e1a880] transition"

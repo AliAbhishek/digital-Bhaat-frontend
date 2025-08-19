@@ -1,4 +1,5 @@
-import { Loader2 } from 'lucide-react'; // clean spinner icon
+import Loader from "./Loader";
+
 
 const PrimaryButton = ({
   text,
@@ -22,7 +23,7 @@ const PrimaryButton = ({
      className={`px-6 py-2 rounded-full text-white flex items-center justify-center gap-2 transition-all ${isPending ? 'bg-[#8b5c3d]/60 cursor-not-allowed' : 'bg-[#8b5c3d] hover:bg-[#c98c64]'} ${className || ''}`}
 
     >
-      {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+      {isPending && <Loader  />}
       {isPending ? 'Processing...' : text}
     </button>
   );

@@ -9,8 +9,8 @@ import StatusButtons from "../Components/UI/StatusButtons";
 import { SimpleText } from "../Components/UI/SimpleText";
 import { useQueryApi } from "../customHooks/useFetchData";
 import { endpoints } from "../api/endpoints";
-import { Loader } from "lucide-react";
 import NoDataFound from "../Components/UI/NoDataFound";
+import Loader from "../Components/UI/Loader";
 
 
 

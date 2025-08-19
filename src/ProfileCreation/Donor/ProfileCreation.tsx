@@ -45,7 +45,7 @@ const DonorProfileCreation = ({ edit }: any) => {
         if (!formData.state) newErrors.state = "State name is required.";
         if (!formData.pinCode) newErrors.pinCode = "Pin code is required.";
         if (!formData.country) newErrors.country = "Country name is required.";
-        if (!formData.consentGiven) newErrors.consentGiven = "Please accept the term and conditions."
+        // if (!formData.consentGiven) newErrors.consentGiven = "Please accept the term and conditions."x
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;

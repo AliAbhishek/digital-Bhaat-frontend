@@ -1,9 +1,10 @@
 
 import { useEffect, useState } from "react";
 import { SettingsContentWrapper } from "./SettingsContentWrapper ";
-import { Loader } from "lucide-react";
+
 import { endpoints } from "../api/endpoints";
 import { useQueryApi } from "../customHooks/useFetchData";
+import Loader from "../Components/UI/Loader";
 
 interface Transaction {
   _id: string;
@@ -44,9 +45,9 @@ export const TransactionHistory = () => {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center h-[300px]">
+      // <div className="flex justify-center items-center h-[300px]">
         <Loader />
-      </div>
+      // </div>
     );
 
 

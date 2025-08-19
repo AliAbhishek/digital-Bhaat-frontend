@@ -20,6 +20,7 @@ export const endpoints = {
     GET_FAV_GAMES:{endpoint:"/games/getFavGames"},
     GAMIFICATION_DONATION:{ endpoint: "/donation/donateViaPlaying", method: "post" },
     DONOR_TRANSACTIONS:{endpoint:"/donation/getDonorTransaction"},
-    BRIDE_TRANSACTIONS:{endpoint:"/donation/brideTransaction"}
+    BRIDE_TRANSACTIONS:{endpoint:"/donation/brideTransaction"},
+    CREATE_RAZORPAY_ORDER:{ endpoint: "/razorpay/createOrder", method: "post" },
 
 }

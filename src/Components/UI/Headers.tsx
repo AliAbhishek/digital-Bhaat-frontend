@@ -1,11 +1,10 @@
-import { Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { Menu, X, User, LogOut, Settings, LayoutDashboard } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/transparentLogo.png';
 import { motion, AnimatePresence } from 'framer-motion';
-import SearchBar from './Searchbar';
 import { getUserIdFromToken } from '../../utils/decodeToken';
-import Moto from './Moto';
+
 
 const Header = () => {
     const token: any = localStorage.getItem("token")
@@ -99,7 +98,28 @@ const Header = () => {
                             </button>
 
                             {dropdownOpen && (
+                                
+                                    
+                                
+                                
+                                
                                 <div className="absolute right-0 mt-2 w-44 bg-[#fef9f6] text-[#8b5c3d] rounded-2xl shadow-lg py-2 z-50 animate-fade-in">
+                                   { role=="donor" && <button
+                                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
+                                        onClick={() => {
+                                            // if(role==user){
+                                            handleNav("/donor-home")
+                                            // }else{
+                                            // handleNav('/create-profile?role=donor&&edit=true')
+                                            // }
+
+
+                                        }}
+                                    >
+                                        <LayoutDashboard className="w-4 h-4" />
+                                        Dashboard
+                                    </button> }
+                                    
                                     <button
                                         className="w-full flex items-center gap-2 px-4 py-2 hover:bg-[#c98c64]/20 transition text-left"
                                         onClick={() => {
